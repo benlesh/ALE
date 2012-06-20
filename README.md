@@ -2,7 +2,7 @@ ALE v 0.0.1.0
 
 Created by Ben Lesh
 
-Licensed under GNU General Public Licence v 3
+Licensed under GNU General Public License v 3
 
 ===
 
