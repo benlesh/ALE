@@ -12,6 +12,7 @@ namespace ALE
 	{
 		protected static readonly ConcurrentQueue<Action> Events = new ConcurrentQueue<Action>();
 		protected static readonly ManualResetEvent StopWorkers = new ManualResetEvent(false);
+		protected static readonly ManualResetEvent PauseWorkers = new ManualResetEvent(true);
 		protected static readonly TaskFactory WorkerFactory = new TaskFactory();
 		protected static readonly List<Task> Workers = new List<Task>();
 		private static bool _started = false;
@@ -56,12 +57,14 @@ namespace ALE
 			{
 				return evt;
 			}
+			PauseWorkers.Reset();
 			return null;
 		}
 
 		public EventLoop Pend(Action evt)
 		{
 			Events.Enqueue(evt);
+			PauseWorkers.Set();
 			return this;
 		}
 
@@ -69,6 +72,7 @@ namespace ALE
 		{
 			while (true)
 			{
+				PauseWorkers.WaitOne(Timeout.Infinite);
 				if (StopWorkers.WaitOne(0))
 				{
 					break;

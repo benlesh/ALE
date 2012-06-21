@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Do.cs" />
     <Compile Include="EventLoop.cs" />
     <Compile Include="FileSystem\File.cs" />
     <Compile Include="Http\Response.cs" />

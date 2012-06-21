@@ -12,17 +12,21 @@ namespace ALE.ConsoleTest
 	{
 		static void Main(string[] args)
 		{
+			EventLoop.Current.WorkerCount = 8;
 			EventLoop.Start(() =>
 			{
-				Server.Create((req, res) =>
+				for (int i = 0; i < 10000; i++)
 				{
-					File.ReadAllText(@"C:\Foo.log", (text) =>
-					{
-						res.Write("This is the Foo.log: <br/>")
-							.Write("<div>").Write(text).Send("</div>");
-					});
-				}).Listen("http://*:1337/");
-				Console.WriteLine("Server is running.");
+					var c = i;
+					Do.Async(() =>
+								{
+									var b = 0;
+									for (int j = 0; j < 1000000; j++)
+									{
+										b *= j;
+									}
+								}, () => Console.WriteLine(c));
+				}
 			});
 			Console.ReadKey();
 		}

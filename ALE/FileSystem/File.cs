@@ -70,7 +70,7 @@ namespace ALE
 		}
 		static void FileReadAsync(string path, int bufferSize, Action<AsyncFileReadState> complete)
 		{
-			var fs = new FileStream(path, FileMode.Open);
+			var fs = System.IO.File.OpenRead(path);
 			var state = new AsyncFileReadState(fs, complete, bufferSize);
 			fs.BeginRead(state.Buffer, 0, state.BufferSize, FileReadCallback, state);
 		}
