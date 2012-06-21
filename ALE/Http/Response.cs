@@ -15,26 +15,30 @@ namespace ALE.Http
 		{
 			get { return _listenerContext; }
 		}
-		public long ContentLength
+
+
+		public string ContentType
 		{
-			get { return _listenerContext.Response.ContentLength64;  }
-			set { _listenerContext.Response.ContentLength64 = Math.Max(0, value); }
+			get { return _listenerContext.Response.ContentType; }
+			set { _listenerContext.Response.ContentType = value; }
 		}
+
 		public Stream OutputStream
 		{
 			get { return _listenerContext.Response.OutputStream; }
 		}
+
 		internal Response(HttpListenerContext context)
 		{
 			if (context == null) throw new ArgumentNullException("context");
 			_listenerContext = context;
+			ContentType = "text/html";
 		}
 
 		public Response Write(string output)
 		{
 			// Construct a response.
 			byte[] buffer = Encoding.UTF8.GetBytes(output);
-			ContentLength = buffer.Length;
 			OutputStream.Write(buffer, 0, buffer.Length);
 			return this;
 		}
@@ -46,6 +50,11 @@ namespace ALE.Http
 				Write(output);
 			}
 			OutputStream.Close();
+		}
+
+		~Response()
+		{
+			Dispose();
 		}
 
 		public void Dispose()

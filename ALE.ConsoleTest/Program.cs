@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using ALE.Http;
-using ALE.SqlClient;
 using System.Threading;
 
 namespace ALE.ConsoleTest
@@ -13,10 +12,19 @@ namespace ALE.ConsoleTest
 	{
 		static void Main(string[] args)
 		{
-            var srvr = Server.Create((req, res) => res.Write("Hello World")).Listen("127.0.0.1", 1337);
-			Console.WriteLine("press any key to stop.");
+			EventLoop.Start(() =>
+			{
+				Server.Create((req, res) =>
+				{
+					File.ReadAllText(@"C:\Foo.log", (text) =>
+					{
+						res.Write("This is the Foo.log: <br/>")
+							.Write("<div>").Write(text).Send("</div>");
+					});
+				}).Listen("http://*:1337/");
+				Console.WriteLine("Server is running.");
+			});
 			Console.ReadKey();
-            srvr.Stop();
 		}
 	}
 }

@@ -11,11 +11,10 @@ namespace ALE
 	public class EventLoop
 	{
 		protected static readonly ConcurrentQueue<Action> Events = new ConcurrentQueue<Action>();
-		protected static readonly ManualResetEvent PauseWorkers = new ManualResetEvent(true);
 		protected static readonly ManualResetEvent StopWorkers = new ManualResetEvent(false);
 		protected static readonly TaskFactory WorkerFactory = new TaskFactory();
 		protected static readonly List<Task> Workers = new List<Task>();
-		private static bool _initialized = false;
+		private static bool _started = false;
 		private static EventLoop _currentEventLoop;
 
 		public static EventLoop Current
@@ -23,9 +22,9 @@ namespace ALE
 			get { return _currentEventLoop ?? (_currentEventLoop = new EventLoop()); }
 		}
 
-		public static EventLoop Start()
+		public static void Start(Action begin)
 		{
-			return Current.StartEventLoop();
+			Current.StartEventLoop(begin);
 		}
 
 		EventLoop()
@@ -33,13 +32,13 @@ namespace ALE
 
 		}
 
-        public bool IsRunning
-        {
-            get
-            {
-                return Workers.Any() && !PauseWorkers.WaitOne(0) && !StopWorkers.WaitOne(0);
-            }
-        }
+		public bool IsRunning
+		{
+			get
+			{
+				return Workers.Any() && !StopWorkers.WaitOne(0);
+			}
+		}
 
 		private int _workerCount = 1;
 
@@ -57,14 +56,12 @@ namespace ALE
 			{
 				return evt;
 			}
-			PauseWorkers.Reset();
 			return null;
 		}
 
 		public EventLoop Pend(Action evt)
 		{
 			Events.Enqueue(evt);
-			PauseWorkers.Set();
 			return this;
 		}
 
@@ -72,7 +69,6 @@ namespace ALE
 		{
 			while (true)
 			{
-				PauseWorkers.WaitOne(Timeout.Infinite);
 				if (StopWorkers.WaitOne(0))
 				{
 					break;
@@ -85,43 +81,38 @@ namespace ALE
 			}
 		}
 
-		EventLoop StartEventLoop()
+		void StartEventLoop(Action begin)
 		{
-			if (_initialized)
+			if (_started)
 			{
-				PauseWorkers.Set();
+				throw new InvalidOperationException("EventLoop is already started.");
 			}
-			else
+			Pend(begin);
+			for (int i = 0; i < WorkerCount; i++)
 			{
-				for (int i = 0; i < WorkerCount; i++)
-				{
-					Workers.Add(WorkerFactory.StartNew(Worker));
-				}
-				_initialized = true;
+				Workers.Add(WorkerFactory.StartNew(Worker));
 			}
-			return this;
 		}
 
-		public static EventLoop Stop()
+		public static void Stop()
 		{
-			return Current.StopEventLoop();
+			Current.StopEventLoop();
 		}
 
-		public EventLoop StopEventLoop()
+		public void StopEventLoop()
 		{
+			//Stop the event loop.
 			StopWorkers.Set();
-			PauseWorkers.Set();
 			foreach (var worker in Workers)
 			{
 				worker.Wait();
 			}
-			return this;
-		}
-
-		public EventLoop Pause()
-		{
-			PauseWorkers.Reset();
-			return this;
+			//Clear the events.
+			while (Events.Count > 0)
+			{
+				Action result;
+				Events.TryDequeue(out result);
+			}
 		}
 	}
 }

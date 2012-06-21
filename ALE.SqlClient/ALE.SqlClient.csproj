@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{48CE219E-2D15-46D8-889F-52E04D110097}</ProjectGuid>
+    <ProjectGuid>{00DC0455-4BA4-4282-B85F-B0B853836681}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ALE</RootNamespace>
-    <AssemblyName>ALE</AssemblyName>
+    <RootNamespace>ALE.SqlClient</RootNamespace>
+    <AssemblyName>ALE.SqlClient</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,11 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EventLoop.cs" />
-    <Compile Include="FileSystem\File.cs" />
-    <Compile Include="Http\Response.cs" />
-    <Compile Include="Http\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sql.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ALE\ALE.csproj">
+      <Project>{48CE219E-2D15-46D8-889F-52E04D110097}</Project>
+      <Name>ALE</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

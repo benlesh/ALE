@@ -23,16 +23,14 @@ namespace ALE.Http
 		{
 			return new Server(callback);
 		}
-
-		public Server Listen(string host, int port = 80, string scheme = "http")
+		public Server Listen(params string[] prefixes)
 		{
-			if (!EventLoop.Current.IsRunning)
-			{
-				EventLoop.Start();
-			}
 			if (RequestReceived == null)
 				throw new InvalidOperationException("Cannot run a server with no callback. RequestReceived must be set.");
-			_listener.Prefixes.Add(CreatePrefix(host, port, scheme));
+			foreach (var prefix in prefixes)
+			{
+				_listener.Prefixes.Add(prefix);
+			}
 			new Task(Run).Start();
 			return this;
 		}
@@ -40,28 +38,23 @@ namespace ALE.Http
 		public void Run()
 		{
 			_listener.Start();
-			while (_listener.IsListening)
-			{
-				var context = _listener.GetContext();
-				EventLoop.Current.Pend(() => RequestReceived(context.Request, new Response(context)));
-			}
+			var context = _listener.BeginGetContext(GetContextCallback, _listener);
 		}
 
-        public void Stop(bool stopEventLoop = false)
-        {
-            _listener.Stop();
-            if (stopEventLoop)
-            {
-                EventLoop.Stop();
-            }
-        }
-		public static string CreatePrefix(string host, int port = 80, string scheme = "http")
+		void GetContextCallback(IAsyncResult result)
 		{
-			var builder = new UriBuilder();
-			builder.Host = host;
-			builder.Scheme = scheme;
-			builder.Port = port;
-			return builder.Uri.ToString();
+			var listener = (HttpListener)result.AsyncState;
+			var context = listener.EndGetContext(result);
+			EventLoop.Current.Pend(() => RequestReceived(context.Request, new Response(context)));
+			listener.BeginGetContext(GetContextCallback, listener);
+		}
+		public void Stop(bool stopEventLoop = false)
+		{
+			_listener.Stop();
+			if (stopEventLoop)
+			{
+				EventLoop.Stop();
+			}
 		}
 	}
 }
