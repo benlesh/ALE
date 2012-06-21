@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using ALE.Http;
 using System.Threading;
+using ALE.Tcp;
 
 namespace ALE.ConsoleTest
 {
@@ -14,20 +15,12 @@ namespace ALE.ConsoleTest
 		{
 			EventLoop.Current.WorkerCount = 8;
 			EventLoop.Start(() =>
-			{
-				for (int i = 0; i < 10000; i++)
-				{
-					var c = i;
-					Do.Async(() =>
 								{
-									var b = 0;
-									for (int j = 0; j < 1000000; j++)
-									{
-										b *= j;
-									}
-								}, () => Console.WriteLine(c));
-				}
-			});
+									Net.CreateServer((socket) =>
+															{
+																socket.Receive(Console.WriteLine);
+															}).Listen("127.0.0.1", 1337, "http://jsfiddle.net");
+								});
 			Console.ReadKey();
 		}
 	}
