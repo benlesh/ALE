@@ -1,4 +1,4 @@
-ALE v 0.0.1.0
+ALE v 0.0.2.1
 
 Created by Ben Lesh
 
@@ -18,4 +18,6 @@ I'm going to continue to work on this as time allows. I'm looking into adding su
 
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
+v 0.0.2.1 - Updated Sql client Reader call to .NET's non-blocking async call.
+v 0.0.2.0 - Updated all I/O called to .NET's non-blocking async calls.
 v 0.0.1.0 - Added a simple SqlClient implementation, ExecuteReader only for now. More soon.

@@ -61,18 +61,17 @@ namespace ALE.SqlClient
         public Sql ExecuteReader(SqlCommand cmd, Action<SqlDataReader> callback)
         {
             if (callback == null) throw new ArgumentNullException("callback");
-            new Action(() =>
-            {
-                cmd.Connection.Open();
-                var reader = cmd.ExecuteReader();
-                EventLoop.Current.Pend(() =>
-                {
-                    callback(reader);
-                    cmd.Connection.Close();
-                });
-            }).BeginInvoke(null, null);
+        	cmd.Connection.Open();
+        	var state = new ExecuteReaderState(cmd, (reader) => EventLoop.Current.Pend(() => callback(reader)));
+			cmd.BeginExecuteReader(EndExecuteReader, state);
             return this;
         }
+		void EndExecuteReader(IAsyncResult result)
+		{
+			var state = (ExecuteReaderState) result.AsyncState;
+			var reader = state.Command.EndExecuteReader(result);
+			state.Complete(reader);
+		}
         public void Dispose()
         {
             if (Connection != null)
@@ -81,4 +80,16 @@ namespace ALE.SqlClient
             }
         }
     }
+
+	public class ExecuteReaderState
+	{
+		public readonly SqlCommand Command;
+		public readonly Action<SqlDataReader> Complete;
+
+		public ExecuteReaderState(SqlCommand cmd, Action<SqlDataReader> complete)
+		{
+			Command = cmd;
+			Complete = complete;
+		}
+	}
 }
