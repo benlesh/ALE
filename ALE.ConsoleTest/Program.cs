@@ -6,6 +6,7 @@ using System.Net;
 using ALE.Http;
 using System.Threading;
 using ALE.Tcp;
+using System.Diagnostics;
 
 namespace ALE.ConsoleTest
 {
@@ -13,14 +14,19 @@ namespace ALE.ConsoleTest
 	{
 		static void Main(string[] args)
 		{
+            //http://jsfiddle.net/Y3mBp/6/
 			EventLoop.Current.WorkerCount = 8;
 			EventLoop.Start(() =>
-								{
-									Net.CreateServer((socket) =>
-															{
-																socket.Receive(Console.WriteLine);
-															}).Listen("127.0.0.1", 1337, "http://jsfiddle.net");
-								});
+			{
+				Net.CreateServer((socket) =>
+				{
+					socket.Send("blah");
+					socket.Receive((text) =>
+					{
+						Debug.WriteLine("CALLBACK -> " + text);
+					});
+				}).Listen("127.0.0.1", 1337, "http://fiddle.jshell.net");
+			});
 			Console.ReadKey();
 		}
 	}

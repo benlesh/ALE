@@ -18,6 +18,7 @@ I'm going to continue to work on this as time allows. I'm looking into adding su
 
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
+ * v 0.0.3.0 - Added non-blocking WebSocket implementation
  * v 0.0.2.2 - Fixed a few issues
     * Fixed an issue where EventLoop wouldn't pause when Events Queue was empty.
 	* Added Do.Async functionality.
