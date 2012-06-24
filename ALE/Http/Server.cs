@@ -19,66 +19,33 @@ namespace ALE.Http
         /// </summary>
         protected readonly HttpListener Listener;
 
-        /// <summary>
-        /// The delegate to execute when a request is received by the server.
-        /// </summary>
-        protected readonly Action<IRequest, IResponse> RequestReceivedCallback;
+        public event Action<IRequest, IResponse> Process;
 
-        /// <summary>
-        /// An event to register and execute preprocessing middleware.
-        /// </summary>
-        public event PreProcessor PreProcess;
-
-        /// <summary>
-        /// Fires the PreProcess event.
-        /// </summary>
-        /// <param name="req">The request object.</param>
-        /// <param name="res">The response object.</param>
-        protected void OnPreProcess(IRequest req, IResponse res)
+        protected void OnProcess(IRequest req, IResponse res)
         {
-            if (PreProcess != null)
+            if(Process != null)
             {
-                PreProcess(req, res);
+                Process(req, res);
             }
         }
-
-        /// <summary>
-        /// An event to register and execute post processing middleware.
-        /// </summary>
-        public event PostProcessor PostProcess;
-
-        /// <summary>
-        /// Fires the PostProcess event.
-        /// </summary>
-        /// <param name="req">The request object.</param>
-        /// <param name="res">The response object.</param>
-        protected void OnPostProcess(IRequest req, IResponse res)
-        {
-            if (PostProcess != null)
-            {
-                PostProcess(req, res);
-            }
-        }
-
         /// <summary>
         /// Creates a new instance of a server.
         /// </summary>
         /// <param name="callback">The request received delegate.</param>
-        private Server(Action<IRequest, IResponse> callback = null)
+        private Server()
         {
             Listener = new HttpListener();
-            RequestReceivedCallback = callback;
         }
 
         /// <summary>
         /// Creates a new server.
         /// </summary>
-        /// <param name="callback">The callback that is made when a request 
+        /// <param name="processor">The callback that is made when a request 
         /// is received by the server.</param>
         /// <returns>An instance of  a server.</returns>
-        public static IServer Create(Action<IRequest, IResponse> callback = null)
+        public static IServer Create()
         {
-            return new Server(callback);
+            return new Server();
         }
 
         /// <summary>
@@ -89,8 +56,8 @@ namespace ALE.Http
         /// <returns>The server it started.</returns>
         public IServer Listen(params string[] prefixes)
         {
-            if (RequestReceivedCallback == null)
-                throw new InvalidOperationException("Cannot run a server with no callback. RequestReceived must be set.");
+            if (Process == null)
+                throw new InvalidOperationException("Cannot run a server with no callback. Process event must be set.");
             foreach (var prefix in prefixes)
             {
                 Listener.Prefixes.Add(prefix);
@@ -117,9 +84,7 @@ namespace ALE.Http
             {
                 var req = context.Request;
                 var res = context.Response;
-                OnPreProcess(req, res);
-                RequestReceivedCallback(req, res);
-                OnPostProcess(req, res);
+                OnProcess(req, res);
                 res.Close();
             });
             listener.BeginGetContext(GetContextCallback, listener);
@@ -143,20 +108,9 @@ namespace ALE.Http
         /// </summary>
         /// <param name="middleware">The middleware to add.</param>
         /// <returns>The server instance.</returns>
-        public IServer Use(PreProcessor middleware)
+        public IServer Use(Action<IRequest, IResponse> processor)
         {
-            PreProcess += middleware;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds postprocessing middleware.
-        /// </summary>
-        /// <param name="middleware">The middleware to add.</param>
-        /// <returns>The server instance.</returns>
-        public IServer Use(PostProcessor middleware)
-        {
-            PostProcess += middleware;
+            Process += processor;
             return this;
         }
     }

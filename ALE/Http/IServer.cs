@@ -1,3 +1,4 @@
+using System;
 namespace ALE.Http
 {
     public interface IServer
@@ -17,17 +18,10 @@ namespace ALE.Http
         void Stop(bool stopEventLoop = false);
 
         /// <summary>
-        /// Adds preprocessing middleware.
+        /// Adds a processor to the server processing event.
         /// </summary>
-        /// <param name="middleware">The middleware to add.</param>
+        /// <param name="processor">The processor to add.</param>
         /// <returns>The server instance.</returns>
-        IServer Use(PreProcessor middleware);
-
-        /// <summary>
-        /// Adds postprocessing middleware.
-        /// </summary>
-        /// <param name="middleware">The middleware to add.</param>
-        /// <returns>The server instance.</returns>
-        IServer Use(PostProcessor middleware);
+        IServer Use(Action<IRequest, IResponse> processor);
     }
 }

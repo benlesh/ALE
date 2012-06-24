@@ -15,9 +15,10 @@ Thank you for any feedback you might have.
 To start a webserver:
 
     EventLoop.Start(() => {
-        Server.Create((req, res) => {
-            res.Write("<h1>Hello World</h1>");
-        }).Listen("http://*:1337");
+        Server.Create()
+		   .Use((req, res) => {
+              res.Write("<h1>Hello World</h1>");
+           }).Listen("http://*:1337");
     });
     
 To set up a web sockets server:
@@ -42,6 +43,9 @@ Within the EventLoop.Start callback any number of the above could occur. This is
 
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
+ * v 0.0.4.4 - Updated web server to use a single event to register all actions
+    * removed preprocessor and post processor events.
+	* Create method no longer used to register a main event. There is no main event.
  * v 0.0.4.2 - Converted middleware usage to simple event/delegate implementation.
  * v 0.0.4.1 - Abstractions and Middleware capabilities added. Laying the groundwork for a routed server.
     * Abstracted out Server, Request and Response.
