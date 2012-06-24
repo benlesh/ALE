@@ -9,52 +9,131 @@ using System.Threading.Tasks;
 
 namespace ALE.Http
 {
-	public class Server
-	{
-		private readonly HttpListener _listener;
-		protected readonly Action<HttpListenerRequest, Response> RequestReceived;
-		public Server(Action<HttpListenerRequest, Response> callback = null)
-		{
-			_listener = new HttpListener();
-			RequestReceived = callback;
-		}
+    /// <summary>
+    /// A simple asynchronous web server for ALE.
+    /// </summary>
+    public class Server : IServer
+    {
+        /// <summary>
+        /// The HTTP listener that handles receiving requests.
+        /// </summary>
+        protected readonly HttpListener Listener;
 
-		public static Server Create(Action<HttpListenerRequest, Response> callback)
-		{
-			return new Server(callback);
-		}
-		public Server Listen(params string[] prefixes)
-		{
-			if (RequestReceived == null)
-				throw new InvalidOperationException("Cannot run a server with no callback. RequestReceived must be set.");
-			foreach (var prefix in prefixes)
-			{
-				_listener.Prefixes.Add(prefix);
-			}
-			new Task(Run).Start();
-			return this;
-		}
+        /// <summary>
+        /// The delegate to execute when a request is received by the server.
+        /// </summary>
+        protected readonly Action<IRequest, IResponse> RequestReceivedCallback;
 
-		public void Run()
-		{
-			_listener.Start();
-			var context = _listener.BeginGetContext(GetContextCallback, _listener);
-		}
+        /// <summary>
+        /// A collection of middleware to be run before request is processed
+        /// </summary>
+        protected readonly List<IPreprocessor> PreprocessMiddleware;
 
-		void GetContextCallback(IAsyncResult result)
-		{
-			var listener = (HttpListener)result.AsyncState;
-			var context = listener.EndGetContext(result);
-			EventLoop.Current.Pend(() => RequestReceived(context.Request, new Response(context)));
-			listener.BeginGetContext(GetContextCallback, listener);
-		}
-		public void Stop(bool stopEventLoop = false)
-		{
-			_listener.Stop();
-			if (stopEventLoop)
-			{
-				EventLoop.Stop();
-			}
-		}
-	}
+        /// <summary>
+        /// A collection of middleware to be run after the request is processed.
+        /// </summary>
+        protected readonly List<IPostprocessor> PostprocessMiddleware;
+
+        /// <summary>
+        /// Creates a new instance of a server.
+        /// </summary>
+        /// <param name="callback">The request received delegate.</param>
+        private Server(Action<IRequest, IResponse> callback = null)
+        {
+            Listener = new HttpListener();
+            PreprocessMiddleware = new List<IPreprocessor>();
+            PostprocessMiddleware = new List<IPostprocessor>();
+            RequestReceivedCallback = callback;
+        }
+
+        /// <summary>
+        /// Creates a new server.
+        /// </summary>
+        /// <param name="callback">The callback that is made when a request 
+        /// is received by the server.</param>
+        /// <returns>An instance of  a server.</returns>
+        public static IServer Create(Action<IRequest, IResponse> callback = null)
+        {
+            return new Server(callback);
+        }
+
+        /// <summary>
+        /// Starts the server listening an any number of
+        /// URI prefixes.
+        /// </summary>
+        /// <param name="prefixes">URI prefixes for the server to listen on.</param>
+        /// <returns>The server it started.</returns>
+        public IServer Listen(params string[] prefixes)
+        {
+            if (RequestReceivedCallback == null)
+                throw new InvalidOperationException("Cannot run a server with no callback. RequestReceived must be set.");
+            foreach (var prefix in prefixes)
+            {
+                Listener.Prefixes.Add(prefix);
+            }
+            if (!Listener.IsListening)
+            {
+                Listener.Start();
+                Listener.BeginGetContext(GetContextCallback, Listener);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Async callback for GetContextCallBack in Listen method 
+        /// above.
+        /// </summary>
+        /// <param name="result">The IAsyncResult.</param>
+        void GetContextCallback(IAsyncResult result)
+        {
+            var listener = (HttpListener)result.AsyncState;
+            var resultContext = listener.EndGetContext(result);
+            var context = new ListenerContext(resultContext);
+            EventLoop.Current.Pend(() =>
+            {
+                var req = context.Request;
+                var res = context.Response;
+                PreprocessMiddleware.ForEach((m) => m.Execute(req, res));
+                RequestReceivedCallback(req, res);
+                PostprocessMiddleware.ForEach((m) => m.Execute(req, res));
+                res.Close();
+            });
+            listener.BeginGetContext(GetContextCallback, listener);
+        }
+
+        /// <summary>
+        /// Stop the server.
+        /// </summary>
+        /// <param name="stopEventLoop"></param>
+        public void Stop(bool stopEventLoop = false)
+        {
+            Listener.Stop();
+            if (stopEventLoop)
+            {
+                EventLoop.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Adds preprocessing middleware.
+        /// </summary>
+        /// <param name="middleware">The middleware to add.</param>
+        /// <returns>The server instance.</returns>
+        public IServer Use(IPreprocessor middleware)
+        {
+            PreprocessMiddleware.Add(middleware);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds postprocessing middleware.
+        /// </summary>
+        /// <param name="middleware">The middleware to add.</param>
+        /// <returns>The server instance.</returns>
+        public IServer Use(IPostprocessor middleware)
+        {
+            PostprocessMiddleware.Add(middleware);
+            return this;
+        }
+    }
 }

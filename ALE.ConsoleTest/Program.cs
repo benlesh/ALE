@@ -10,24 +10,42 @@ using System.Diagnostics;
 
 namespace ALE.ConsoleTest
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-            //http://jsfiddle.net/Y3mBp/6/
-			EventLoop.Current.WorkerCount = 8;
-			EventLoop.Start(() =>
-			{
-				Net.CreateServer((socket) =>
-				{
-					socket.Send("blah");
-					socket.Receive((text) =>
-					{
-						Debug.WriteLine("CALLBACK -> " + text);
-					});
-				}).Listen("127.0.0.1", 1337, "http://fiddle.jshell.net");
-			});
-			Console.ReadKey();
-		}
-	}
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            EventLoop.Start(() =>
+            {
+                Server.Create((req, res) =>
+                {
+                    var bag = req.Context.ContextBag;
+
+                    res.Write("<p>Pre processed data: " + bag.PreProcessedData + "</p>");
+
+                    bag.PostProcessedData = "Bar";
+                }).Use(new TestPreprocessor())
+                .Use(new TestPostprocessor())
+                .Listen("http://localhost:1337/");
+            });
+            Console.ReadKey();
+        }
+    }
+
+    class TestPreprocessor : IPreprocessor
+    {
+        public void Execute(IRequest req, IResponse res)
+        {
+            var bag = req.Context.ContextBag;
+            bag.PreProcessedData = "FOO";
+        }
+    }
+
+
+    class TestPostprocessor : IPostprocessor
+    {
+        public void Execute(IRequest req, IResponse res)
+        {
+            res.Write("<p>Post processed data: " + req.Context.ContextBag.PostProcessedData + "</p>");
+        }
+    }
 }
