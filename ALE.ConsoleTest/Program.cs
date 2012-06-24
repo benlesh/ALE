@@ -10,42 +10,37 @@ using System.Diagnostics;
 
 namespace ALE.ConsoleTest
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             EventLoop.Start(() =>
             {
                 Server.Create((req, res) =>
                 {
-                    var bag = req.Context.ContextBag;
-
-                    res.Write("<p>Pre processed data: " + bag.PreProcessedData + "</p>");
-
-                    bag.PostProcessedData = "Bar";
-                }).Use(new TestPreprocessor())
-                .Use(new TestPostprocessor())
+                    res.Write("<p>Hello World</p>");
+                })
+                .Use(Middleware.AddFooBefore)
+                .Use(Middleware.AddBarAfter)
                 .Listen("http://localhost:1337/");
             });
             Console.ReadKey();
         }
     }
 
-    class TestPreprocessor : IPreprocessor
+    internal class Middleware
     {
-        public void Execute(IRequest req, IResponse res)
+        public static PreProcessor AddFooBefore = new PreProcessor(AddFoo);
+        public static PostProcessor AddBarAfter = new PostProcessor(AddBar);
+
+        static void AddFoo(IRequest req, IResponse res)
         {
-            var bag = req.Context.ContextBag;
-            bag.PreProcessedData = "FOO";
+            res.Write("<p>Foo</p>");
         }
-    }
 
-
-    class TestPostprocessor : IPostprocessor
-    {
-        public void Execute(IRequest req, IResponse res)
+        static void AddBar(IRequest req, IResponse res)
         {
-            res.Write("<p>Post processed data: " + req.Context.ContextBag.PostProcessedData + "</p>");
+            res.Write("<p>Bar</p>");
         }
     }
 }

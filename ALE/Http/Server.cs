@@ -25,14 +25,40 @@ namespace ALE.Http
         protected readonly Action<IRequest, IResponse> RequestReceivedCallback;
 
         /// <summary>
-        /// A collection of middleware to be run before request is processed
+        /// An event to register and execute preprocessing middleware.
         /// </summary>
-        protected readonly List<IPreprocessor> PreprocessMiddleware;
+        public event PreProcessor PreProcess;
 
         /// <summary>
-        /// A collection of middleware to be run after the request is processed.
+        /// Fires the PreProcess event.
         /// </summary>
-        protected readonly List<IPostprocessor> PostprocessMiddleware;
+        /// <param name="req">The request object.</param>
+        /// <param name="res">The response object.</param>
+        protected void OnPreProcess(IRequest req, IResponse res)
+        {
+            if (PreProcess != null)
+            {
+                PreProcess(req, res);
+            }
+        }
+
+        /// <summary>
+        /// An event to register and execute post processing middleware.
+        /// </summary>
+        public event PostProcessor PostProcess;
+
+        /// <summary>
+        /// Fires the PostProcess event.
+        /// </summary>
+        /// <param name="req">The request object.</param>
+        /// <param name="res">The response object.</param>
+        protected void OnPostProcess(IRequest req, IResponse res)
+        {
+            if (PostProcess != null)
+            {
+                PostProcess(req, res);
+            }
+        }
 
         /// <summary>
         /// Creates a new instance of a server.
@@ -41,8 +67,6 @@ namespace ALE.Http
         private Server(Action<IRequest, IResponse> callback = null)
         {
             Listener = new HttpListener();
-            PreprocessMiddleware = new List<IPreprocessor>();
-            PostprocessMiddleware = new List<IPostprocessor>();
             RequestReceivedCallback = callback;
         }
 
@@ -93,9 +117,9 @@ namespace ALE.Http
             {
                 var req = context.Request;
                 var res = context.Response;
-                PreprocessMiddleware.ForEach((m) => m.Execute(req, res));
+                OnPreProcess(req, res);
                 RequestReceivedCallback(req, res);
-                PostprocessMiddleware.ForEach((m) => m.Execute(req, res));
+                OnPostProcess(req, res);
                 res.Close();
             });
             listener.BeginGetContext(GetContextCallback, listener);
@@ -119,9 +143,9 @@ namespace ALE.Http
         /// </summary>
         /// <param name="middleware">The middleware to add.</param>
         /// <returns>The server instance.</returns>
-        public IServer Use(IPreprocessor middleware)
+        public IServer Use(PreProcessor middleware)
         {
-            PreprocessMiddleware.Add(middleware);
+            PreProcess += middleware;
             return this;
         }
 
@@ -130,9 +154,9 @@ namespace ALE.Http
         /// </summary>
         /// <param name="middleware">The middleware to add.</param>
         /// <returns>The server instance.</returns>
-        public IServer Use(IPostprocessor middleware)
+        public IServer Use(PostProcessor middleware)
         {
-            PostprocessMiddleware.Add(middleware);
+            PostProcess += middleware;
             return this;
         }
     }

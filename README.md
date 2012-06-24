@@ -42,6 +42,7 @@ Within the EventLoop.Start callback any number of the above could occur. This is
 
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
+ * v 0.0.4.2 - Converted middleware usage to simple event/delegate implementation.
  * v 0.0.4.1 - Abstractions and Middleware capabilities added. Laying the groundwork for a routed server.
     * Abstracted out Server, Request and Response.
 	* Added IPreprocessor and IPostprocessor for "before and after" middleware implementations.

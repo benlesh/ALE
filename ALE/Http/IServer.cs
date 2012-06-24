@@ -21,13 +21,13 @@ namespace ALE.Http
         /// </summary>
         /// <param name="middleware">The middleware to add.</param>
         /// <returns>The server instance.</returns>
-        IServer Use(IPreprocessor middleware);
+        IServer Use(PreProcessor middleware);
 
         /// <summary>
         /// Adds postprocessing middleware.
         /// </summary>
         /// <param name="middleware">The middleware to add.</param>
         /// <returns>The server instance.</returns>
-        IServer Use(IPostprocessor middleware);
+        IServer Use(PostProcessor middleware);
     }
 }
