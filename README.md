@@ -43,6 +43,7 @@ Within the EventLoop.Start callback any number of the above could occur. This is
 
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
+ * v 0.0.4.6 - Added a static file server implementation.
  * v 0.0.4.4 - Updated web server to use a single event to register all actions
     * removed preprocessor and post processor events.
 	* Create method no longer used to register a main event. There is no main event.
