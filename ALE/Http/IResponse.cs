@@ -25,7 +25,7 @@ namespace ALE.Http
         void AppendHeader(string name, string value);
         IResponse Write(string text);
         IResponse Write(byte[] binary);
-        void Close(string text = "");
+        void Send();
         void Redirect(string location);
     }
 }

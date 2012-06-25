@@ -30,5 +30,12 @@ namespace ALE.Http
         public IPrincipal User { get; private set; }
         public IRequest Request { get; private set; }
         public IResponse Response { get; private set; }
+
+        public bool IsExecutionComplete { get; private set; }
+
+        public void Complete()
+        {
+            IsExecutionComplete = true;
+        }
     }
 }

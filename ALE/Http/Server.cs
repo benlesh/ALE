@@ -25,7 +25,11 @@ namespace ALE.Http
         {
             if(Process != null)
             {
-                Process(req, res);
+                foreach (var invocation in Process.GetInvocationList())
+                {
+                    if(res.Context.IsExecutionComplete) break;
+                    invocation.DynamicInvoke(req, res);
+                }
             }
         }
         /// <summary>
@@ -79,13 +83,13 @@ namespace ALE.Http
         {
             var listener = (HttpListener)result.AsyncState;
             var resultContext = listener.EndGetContext(result);
+
             var context = new ListenerContext(resultContext);
             EventLoop.Current.Pend(() =>
             {
                 var req = context.Request;
                 var res = context.Response;
                 OnProcess(req, res);
-                res.Close();
             });
             listener.BeginGetContext(GetContextCallback, listener);
         }

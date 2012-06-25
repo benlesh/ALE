@@ -53,6 +53,7 @@
     <Compile Include="Http\PostProcessor.cs" />
     <Compile Include="Http\PreProcessor.cs" />
     <Compile Include="Http\Server.cs" />
+    <Compile Include="Http\Static.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlClient\Sql.cs" />
     <Compile Include="Tcp\Net.cs" />

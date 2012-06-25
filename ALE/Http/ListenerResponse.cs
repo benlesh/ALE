@@ -24,6 +24,8 @@ namespace ALE.Http
 
         public IContext Context { get; private set; }
 
+        public bool Closed { get; private set; }
+
         public string ContentType
         {
             get { return InnerResponse.ContentType; }
@@ -54,13 +56,11 @@ namespace ALE.Http
             return this;
         }
 
-        public void Close(string output = "")
+        public void Send()
         {
-            if (!String.IsNullOrWhiteSpace(output))
-            {
-                Write(output);
-            }
+            OutputStream.Flush();
             OutputStream.Close();
+            Context.Complete();
         }
 
         public CookieCollection Cookies

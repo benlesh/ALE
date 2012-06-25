@@ -14,15 +14,6 @@ namespace ALE.ConsoleTest
     {
         private static void Main(string[] args)
         {
-            EventLoop.Start(() =>
-            {
-                Server.Create()
-                    .Use((req, res) => res.Write("<p>Foo!</p>"))
-                    .Use((req, res) => res.Write("<p>Bar!</p>"))
-                    .Use((req, res) => res.Write("<p>Wassup!</p>"))
-                    .Listen("http://*:1337/");
-            });
-            Console.ReadKey();
         }
     }
 

@@ -1,4 +1,6 @@
 using System.Security.Principal;
+using System.Collections.Generic;
+using System;
 
 namespace ALE.Http
 {
@@ -21,5 +23,15 @@ namespace ALE.Http
         /// The user security information.
         /// </summary>
         IPrincipal User { get; }
+        /// <summary>
+        /// If set true will halt the execution of
+        /// remaining middleware.
+        /// </summary>
+        bool IsExecutionComplete { get; }
+        /// <summary>
+        /// When called, will halt the execution 
+        /// of remaining middleware
+        /// </summary>
+        void Complete();
     }
 }
