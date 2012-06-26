@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Text;
 
 namespace ALE
 {
@@ -14,67 +13,74 @@ namespace ALE
 		{
 			ReadAllBytes(path, DefaultBufferSize16K, callback);
 		}
+
 		public static void ReadAllBytes(string path, int bufferSize, Action<byte[]> callback)
 		{
 			if (callback == null) throw new ArgumentNullException("callback");
 			FileReadAsync(path, bufferSize, (state) =>
-												{
-													var data = state.OutputStream.ToArray();
-													EventLoop.Current.Pend(() => callback(data));
-												});
+			                                	{
+			                                		var data = state.OutputStream.ToArray();
+			                                		EventLoop.Current.Pend(() => callback(data));
+			                                	});
 		}
 
 		public static void ReadAllText(string path, Action<string> callback)
 		{
 			ReadAllText(path, Encoding.UTF8, DefaultBufferSize16K, callback);
 		}
+
 		public static void ReadAllText(string path, Encoding encoding, Action<string> callback)
 		{
 			ReadAllText(path, encoding, DefaultBufferSize16K, callback);
 		}
+
 		public static void ReadAllText(string path, Encoding encoding, int bufferSize, Action<string> callback)
 		{
 			if (callback == null) throw new ArgumentNullException("callback");
 			if (encoding == null) throw new ArgumentNullException("encoding");
 			FileReadAsync(path, bufferSize, (state) =>
-												{
-													var text = encoding.GetString(state.OutputStream.ToArray());
-													EventLoop.Current.Pend(() => callback(text));
-												});
+			                                	{
+			                                		var text = encoding.GetString(state.OutputStream.ToArray());
+			                                		EventLoop.Current.Pend(() => callback(text));
+			                                	});
 		}
-		
+
 		public static void ReadAllLines(string path, Action<string[]> callback)
 		{
 			ReadAllLines(path, Encoding.UTF8, DefaultBufferSize16K, callback);
 		}
+
 		public static void ReadAllLines(string path, Encoding encoding, Action<string[]> callback)
 		{
 			ReadAllLines(path, encoding, DefaultBufferSize16K, callback);
 		}
+
 		public static void ReadAllLines(string path, Encoding encoding, int bufferSize, Action<string[]> callback)
 		{
 			if (callback == null) throw new ArgumentNullException("callback");
 			if (encoding == null) throw new ArgumentNullException("encoding");
 			FileReadAsync(path, bufferSize, (state) =>
-												{
-													var lines = new List<string>();
-													using (var reader = new StreamReader(state.OutputStream))
-													{
-														while (reader.Peek() >= 0)
-														{
-															lines.Add(reader.ReadLine());
-														}
-													}
-													EventLoop.Current.Pend(() => callback(lines.ToArray()));
-												});
+			                                	{
+			                                		var lines = new List<string>();
+			                                		using (var reader = new StreamReader(state.OutputStream))
+			                                		{
+			                                			while (reader.Peek() >= 0)
+			                                			{
+			                                				lines.Add(reader.ReadLine());
+			                                			}
+			                                		}
+			                                		EventLoop.Current.Pend(() => callback(lines.ToArray()));
+			                                	});
 		}
-		static void FileReadAsync(string path, int bufferSize, Action<AsyncFileReadState> complete)
+
+		private static void FileReadAsync(string path, int bufferSize, Action<AsyncFileReadState> complete)
 		{
 			var fs = System.IO.File.OpenRead(path);
 			var state = new AsyncFileReadState(fs, complete, bufferSize);
 			fs.BeginRead(state.Buffer, 0, state.BufferSize, FileReadCallback, state);
 		}
-		static void FileReadCallback(IAsyncResult result)
+
+		private static void FileReadCallback(IAsyncResult result)
 		{
 			var state = (AsyncFileReadState) result.AsyncState;
 			var bytesRead = state.FileStream.EndRead(result);
@@ -85,7 +91,7 @@ namespace ALE
 				state.FileStream.BeginRead(state.Buffer, 0, state.BufferSize, FileReadCallback, state);
 			}
 			else
-			{ 
+			{
 				//reset the position for use in Completion delegate.
 				state.OutputStream.Position = 0;
 				state.Complete(state);
@@ -116,10 +122,7 @@ namespace ALE
 			BytesRemaining = fs.Length;
 		}
 
-		~AsyncFileReadState()
-		{
-			Dispose();
-		}
+		#region IDisposable Members
 
 		public void Dispose()
 		{
@@ -131,6 +134,13 @@ namespace ALE
 			{
 				OutputStream.Dispose();
 			}
+		}
+
+		#endregion
+
+		~AsyncFileReadState()
+		{
+			Dispose();
 		}
 	}
 }

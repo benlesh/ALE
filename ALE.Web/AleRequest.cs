@@ -4,34 +4,24 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Web;
+using ALE.Http;
 
-namespace ALE.Http
+namespace ALE.Web
 {
-	internal class ListenerRequest : IRequest
+	public class AleRequest : IRequest
 	{
-		protected readonly HttpListenerRequest InnerRequest;
+		public readonly HttpRequest InnerRequest;
 
-		private readonly IContext _context;
-
-		internal ListenerRequest(HttpListenerRequest innerRequest, IContext context)
+		public AleRequest(HttpRequest innerRequest, IContext context)
 		{
-			if (innerRequest == null) throw new ArgumentNullException("innerRequest");
-			if (context == null) throw new ArgumentNullException("context");
 			InnerRequest = innerRequest;
-			_context = context;
-		}
-
-		public bool HasBody
-		{
-			get { return InnerRequest.HasEntityBody; }
+			Context = context;
 		}
 
 		#region IRequest Members
 
-		public IContext Context
-		{
-			get { return _context; }
-		}
+		public IContext Context { get; private set; }
 
 		public IEnumerable<string> AcceptTypes
 		{
@@ -45,7 +35,7 @@ namespace ALE.Http
 
 		public long ContentLength
 		{
-			get { return InnerRequest.ContentLength64; }
+			get { return InnerRequest.ContentLength; }
 		}
 
 		public string ContentType
@@ -55,7 +45,7 @@ namespace ALE.Http
 
 		public CookieCollection Cookies
 		{
-			get { return InnerRequest.Cookies; }
+			get { throw new NotImplementedException("Sorry, I'm working on this."); }
 		}
 
 		public Stream InputStream

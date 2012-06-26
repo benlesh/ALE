@@ -38,11 +38,58 @@ Or just to do something like read a file from disk:
             DoSomething(text);
         });
     });
-    
-Within the EventLoop.Start callback any number of the above could occur. This is more than just a web server, it's an event loop architecture.
+	
+To start a ALE in IIS:
+
+* Start a new web project.
+* Reference ALE and ALE.Web.
+* Add a reference to the HttpHandler in the Web.Config (here is the minimum Web.config required):
+
+    <?xml version="1.0"?>
+    <configuration>
+      <system.web>
+        <compilation debug="true" targetFramework="4.0" />
+      </system.web>
+
+      <system.webServer>
+        <validation validateIntegratedModeConfiguration="false"/>
+        <modules runAllManagedModulesForAllRequests="true"/>
+        <handlers>
+          <add verb="*" path="*"
+            name="AleHttpHandler"
+            type="ALE.Web.AleHttpHandler"/>
+        </handlers>
+      </system.webServer>
+    </configuration>
+	
+* Add initialization code to Application_Start in your Global.asax:
+
+    void Application_Start(object sender, EventArgs e)
+    {
+        // Start the event loop.
+        EventLoop.Start();
+
+        // Get the ALE server instance and wire up your middlware.
+        ALE.Web.Server.Create()
+            .Use((req, res) => res.Write("Hello World"))
+            .Use((req, res) => res.Write("<br/>No seriously, I said hello."));
+    }
+
+* Add teardown in Application_End in your Global.asax:
+
+    void Application_End(object sender, EventArgs e)
+    {
+        // Shut down the EventLoop.
+        EventLoop.Stop();
+    }
+
+
 
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
+Version History
+
+ * v 0.0.5.0 - Added asynchronous http handler for IIS integration.
  * v 0.0.4.6 - Added a static file server implementation.
  * v 0.0.4.4 - Updated web server to use a single event to register all actions
     * removed preprocessor and post processor events.

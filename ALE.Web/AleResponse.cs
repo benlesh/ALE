@@ -3,41 +3,21 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Web;
+using ALE.Http;
 
-namespace ALE.Http
+namespace ALE.Web
 {
-	public class ListenerResponse : IResponse
+	public class AleResponse : IResponse
 	{
-		protected readonly HttpListenerResponse InnerResponse;
+		public readonly HttpResponse InnerResponse;
 
-		internal ListenerResponse(HttpListenerResponse innerResponse, IContext context)
+		public AleResponse(HttpResponse innerResponse, IContext context)
 		{
 			if (innerResponse == null) throw new ArgumentNullException("innerResponse");
 			if (context == null) throw new ArgumentNullException("context");
 			InnerResponse = innerResponse;
 			Context = context;
-			ContentType = "text/html";
-			ContentEncoding = Encoding.UTF8;
-		}
-
-		public bool Closed { get; private set; }
-
-		public bool KeepAlive
-		{
-			get { return InnerResponse.KeepAlive; }
-			set { InnerResponse.KeepAlive = value; }
-		}
-
-		public Version ProtocalVersion
-		{
-			get { return InnerResponse.ProtocolVersion; }
-			set { InnerResponse.ProtocolVersion = value; }
-		}
-
-		public bool SendChunked
-		{
-			get { return InnerResponse.SendChunked; }
-			set { InnerResponse.SendChunked = value; }
 		}
 
 		#region IResponse Members
@@ -56,39 +36,19 @@ namespace ALE.Http
 			set { InnerResponse.ContentEncoding = value; }
 		}
 
-		public Stream OutputStream
-		{
-			get { return InnerResponse.OutputStream; }
-		}
-
-		public IResponse Write(string text)
-		{
-			// Construct a response.
-			var buffer = ContentEncoding.GetBytes(text);
-			return Write(buffer);
-		}
-
-		public IResponse Write(byte[] binary)
-		{
-			OutputStream.Write(binary, 0, binary.Length);
-			return this;
-		}
-
-		public void Send()
-		{
-			OutputStream.Flush();
-			OutputStream.Close();
-			Context.Complete();
-		}
-
 		public CookieCollection Cookies
 		{
-			get { return InnerResponse.Cookies; }
+			get { throw new NotImplementedException("Sorry"); }
 		}
 
 		public NameValueCollection Headers
 		{
 			get { return InnerResponse.Headers; }
+		}
+
+		public Stream OutputStream
+		{
+			get { return InnerResponse.OutputStream; }
 		}
 
 		public string RedirectLocation
@@ -116,7 +76,7 @@ namespace ALE.Http
 
 		public void AppendCookie(Cookie cookie)
 		{
-			InnerResponse.AppendCookie(cookie);
+			throw new NotImplementedException();
 		}
 
 		public void AppendHeader(string name, string value)
@@ -124,9 +84,28 @@ namespace ALE.Http
 			InnerResponse.AppendHeader(name, value);
 		}
 
-		public void Redirect(string url)
+		public IResponse Write(string text)
 		{
-			InnerResponse.Redirect(url);
+			InnerResponse.Write(text);
+			return this;
+		}
+
+		public IResponse Write(byte[] binary)
+		{
+			InnerResponse.BinaryWrite(binary);
+			return this;
+		}
+
+		public void Send()
+		{
+			InnerResponse.Flush();
+			InnerResponse.Close();
+			Context.Complete();
+		}
+
+		public void Redirect(string location)
+		{
+			InnerResponse.Redirect(location);
 		}
 
 		#endregion

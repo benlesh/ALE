@@ -1,37 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Net;
+using System.Linq;
 using System.Text;
+using ALE.Http;
+using System.Web;
 
-namespace ALE.Http
+namespace ALE.Web
 {
-	internal class ListenerRequest : IRequest
+	public class AleRequest : IRequest
 	{
-		protected readonly HttpListenerRequest InnerRequest;
-
-		private readonly IContext _context;
-
-		internal ListenerRequest(HttpListenerRequest innerRequest, IContext context)
+		public readonly HttpRequest InnerRequest;
+		public AleRequest(HttpRequest innerRequest, IContext context)
 		{
-			if (innerRequest == null) throw new ArgumentNullException("innerRequest");
-			if (context == null) throw new ArgumentNullException("context");
 			InnerRequest = innerRequest;
-			_context = context;
+			Context = context;
 		}
 
-		public bool HasBody
-		{
-			get { return InnerRequest.HasEntityBody; }
-		}
-
-		#region IRequest Members
-
-		public IContext Context
-		{
-			get { return _context; }
-		}
+		public IContext Context { get; private set; }
 
 		public IEnumerable<string> AcceptTypes
 		{
@@ -45,7 +30,7 @@ namespace ALE.Http
 
 		public long ContentLength
 		{
-			get { return InnerRequest.ContentLength64; }
+			get { return InnerRequest.ContentLength; }
 		}
 
 		public string ContentType
@@ -53,12 +38,12 @@ namespace ALE.Http
 			get { return InnerRequest.ContentType; }
 		}
 
-		public CookieCollection Cookies
+		public System.Net.CookieCollection Cookies
 		{
-			get { return InnerRequest.Cookies; }
+			get { throw new NotImplementedException("Sorry, I'm working on this."); }
 		}
 
-		public Stream InputStream
+		public System.IO.Stream InputStream
 		{
 			get { return InnerRequest.InputStream; }
 		}
@@ -68,7 +53,7 @@ namespace ALE.Http
 			get { return InnerRequest.HttpMethod; }
 		}
 
-		public NameValueCollection Headers
+		public System.Collections.Specialized.NameValueCollection Headers
 		{
 			get { return InnerRequest.Headers; }
 		}
@@ -102,7 +87,5 @@ namespace ALE.Http
 		{
 			get { return InnerRequest.UserLanguages; }
 		}
-
-		#endregion
 	}
 }

@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,38 +14,33 @@ namespace ALE
 		protected static readonly ManualResetEvent PauseWorkers = new ManualResetEvent(true);
 		protected static readonly TaskFactory WorkerFactory = new TaskFactory();
 		protected static readonly List<Task> Workers = new List<Task>();
-		private static bool _started = false;
+		private static bool _started;
 		private static EventLoop _currentEventLoop;
+		private int _workerCount = 1;
+
+		private EventLoop()
+		{
+		}
 
 		public static EventLoop Current
 		{
 			get { return _currentEventLoop ?? (_currentEventLoop = new EventLoop()); }
 		}
 
-		public static void Start(Action begin)
-		{
-			Current.StartEventLoop(begin);
-		}
-
-		EventLoop()
-		{
-
-		}
-
 		public bool IsRunning
 		{
-			get
-			{
-				return Workers.Any() && !StopWorkers.WaitOne(0);
-			}
+			get { return Workers.Any() && !StopWorkers.WaitOne(0); }
 		}
-
-		private int _workerCount = 1;
 
 		public int WorkerCount
 		{
 			get { return _workerCount; }
 			set { _workerCount = value; }
+		}
+
+		public static void Start(Action begin = null)
+		{
+			Current.StartEventLoop(begin);
 		}
 
 
@@ -85,14 +79,17 @@ namespace ALE
 			}
 		}
 
-		void StartEventLoop(Action begin)
+		private void StartEventLoop(Action begin = null)
 		{
 			if (_started)
 			{
 				throw new InvalidOperationException("EventLoop is already started.");
 			}
-			Pend(begin);
-			for (int i = 0; i < WorkerCount; i++)
+			if (begin != null)
+			{
+				Pend(begin);
+			}
+			for (var i = 0; i < WorkerCount; i++)
 			{
 				Workers.Add(WorkerFactory.StartNew(Worker));
 			}

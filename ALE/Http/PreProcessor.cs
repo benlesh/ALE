@@ -1,4 +1,4 @@
 namespace ALE.Http
 {
-    public delegate void PreProcessor(IRequest req, IResponse res);
+	public delegate void PreProcessor(IRequest req, IResponse res);
 }
