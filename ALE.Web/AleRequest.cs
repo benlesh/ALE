@@ -15,6 +15,8 @@ namespace ALE.Web
 
 		public AleRequest(HttpRequest innerRequest, IContext context)
 		{
+			if(innerRequest == null) throw new ArgumentNullException("innerRequest");
+			if(context == null) throw new ArgumentNullException("context");
 			InnerRequest = innerRequest;
 			Context = context;
 		}

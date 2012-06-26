@@ -18,10 +18,10 @@ namespace ALE.Web
 			if (context == null) throw new ArgumentNullException("context");
 			InnerResponse = innerResponse;
 			Context = context;
+			ContentType = "text/html";
+			StatusCode = 200; //OK
 		}
-
-		#region IResponse Members
-
+		
 		public IContext Context { get; private set; }
 
 		public string ContentType
@@ -107,7 +107,5 @@ namespace ALE.Web
 		{
 			InnerResponse.Redirect(location);
 		}
-
-		#endregion
 	}
 }
