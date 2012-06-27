@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace ALE.Tcp
 {
@@ -103,7 +104,7 @@ namespace ALE.Tcp
 			}
 		}
 
-		public void Send(string text, Action callback = null)
+		public void Send(string text, Action<Task> callback = null)
 		{
 			Debug.WriteLine(text);
 			var writeBuffer = EncodeServerData(text);
@@ -112,7 +113,7 @@ namespace ALE.Tcp
 			netstream.BeginWrite(writeBuffer, 0, writeBuffer.Length, SendCallback, state);
 		}
 
-		public void SendUnencoded(string text, Action callback = null)
+		public void SendUnencoded(string text, Action<Task> callback = null)
 		{
 			Debug.WriteLine(text);
 			var writeBuffer = Encoding.GetBytes(text);
@@ -130,7 +131,7 @@ namespace ALE.Tcp
 			netstream.EndWrite(result);
 			if (callback != null)
 			{
-				EventLoop.Current.Pend(callback);
+				EventLoop.Pend(callback);
 			}
 		}
 
@@ -158,10 +159,10 @@ namespace ALE.Tcp
 					var text = Encoding.GetString(state.Buffer, 0, bytesRead);
 					ClientHandshake = text;
 					var secKey = GetSecKey(ClientHandshake);
-					SendUnencoded(GetHandshake(secKey), () =>
+					SendUnencoded(GetHandshake(secKey), t =>
 					                                    	{
 					                                    		BeginRead();
-					                                    		EventLoop.Current.Pend(() => Server.Callback(this));
+					                                    		EventLoop.Pend(x => Server.Callback(this));
 					                                    	});
 				}
 				else
@@ -171,7 +172,8 @@ namespace ALE.Tcp
 					Debug.WriteLine("Events to fire: " + _receiveEvents.Count);
 					foreach (var receive in _receiveEvents)
 					{
-						EventLoop.Current.Pend(() => receive(text));
+						var rec = receive;
+						EventLoop.Pend((t) => rec(text));
 					}
 					BeginRead();
 				}
@@ -184,7 +186,7 @@ namespace ALE.Tcp
 			byte[] header;
 			if (bytesRaw.Length <= 125)
 			{
-				header = new byte[2]
+				header = new byte[]
 				         	{
 				         		129,
 				         		(byte) bytesRaw.Length
@@ -192,7 +194,7 @@ namespace ALE.Tcp
 			}
 			else if (bytesRaw.Length >= 126 && bytesRaw.Length <= 65535)
 			{
-				header = new byte[4]
+				header = new byte[]
 				         	{
 				         		129,
 				         		126,
@@ -202,7 +204,7 @@ namespace ALE.Tcp
 			}
 			else
 			{
-				header = new byte[10]
+				header = new byte[]
 				         	{
 				         		129,
 				         		127,
@@ -287,10 +289,10 @@ namespace ALE.Tcp
 
 		private class SendState
 		{
-			public readonly Action Callback;
+			public readonly Action<Task> Callback;
 			public readonly NetworkStream NetworkStream;
 
-			public SendState(NetworkStream netstream, Action callback)
+			public SendState(NetworkStream netstream, Action<Task> callback)
 			{
 				NetworkStream = netstream;
 				Callback = callback;

@@ -42,7 +42,9 @@
   <ItemGroup>
     <Compile Include="Do.cs" />
     <Compile Include="EventLoop.cs" />
+    <Compile Include="FileSystem\AsyncFileReadState.cs" />
     <Compile Include="FileSystem\File.cs" />
+    <Compile Include="FileSystem\ReadAsyncCallbackState.cs" />
     <Compile Include="Http\IContext.cs" />
     <Compile Include="Http\IRequest.cs" />
     <Compile Include="Http\IResponse.cs" />

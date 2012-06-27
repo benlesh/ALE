@@ -101,16 +101,16 @@ namespace ALE.Http
 		/// <param name="result"> The IAsyncResult. </param>
 		private void GetContextCallback(IAsyncResult result)
 		{
-			var listener = (HttpListener) result.AsyncState;
+			var listener = (HttpListener)result.AsyncState;
 			var resultContext = listener.EndGetContext(result);
 
 			var context = new ListenerContext(resultContext);
-			EventLoop.Current.Pend(() =>
-			                       	{
-			                       		var req = context.Request;
-			                       		var res = context.Response;
-			                       		OnProcess(req, res);
-			                       	});
+			EventLoop.Pend((t) =>
+									{
+										var req = context.Request;
+										var res = context.Response;
+										OnProcess(req, res);
+									});
 			listener.BeginGetContext(GetContextCallback, listener);
 		}
 	}

@@ -9,10 +9,6 @@ namespace ALE.Web
 
 		private Server()
 		{
-			if (!EventLoop.Current.IsRunning)
-			{
-				EventLoop.Start(() => { });
-			}
 		}
 
 		public event Action<IRequest, IResponse> Process;

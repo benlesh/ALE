@@ -88,7 +88,10 @@ To start a ALE in IIS:
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
 Version History
-
+ * v 0.0.6.1 - Rewrote EventLoop to use Tasks and ContinueWith rather than Actions for performance reasons, and cleaned up the api a little.
+   * moved File class to proper namespace.
+   * updated File async methods.
+   * added File.Read method for streaming file data.
  * v 0.0.5.0 - Added asynchronous http handler for IIS integration.
  * v 0.0.4.6 - Added a static file server implementation.
  * v 0.0.4.4 - Updated web server to use a single event to register all actions

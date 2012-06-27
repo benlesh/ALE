@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace ALE
 {
 	public class Do
 	{
-		public static void Async(Action operation, Action callback = null)
+		public static void Async(Action operation, Action<Task> callback = null)
 		{
-			EventLoop.Current.Pend(() =>
+			EventLoop.Pend((t) =>
 			                       	{
 			                       		operation();
 			                       		if (callback != null)
 			                       		{
-			                       			EventLoop.Current.Pend(callback);
+			                       			EventLoop.Pend(callback);
 			                       		}
 			                       	});
 		}

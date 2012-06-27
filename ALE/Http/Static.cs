@@ -195,7 +195,7 @@ namespace ALE.Http
 			       		var filePath = Path.Combine(path, unUrlified);
 			       		if (System.IO.File.Exists(filePath))
 			       		{
-			       			File.ReadAllBytes(filePath, (buffer) =>
+			       			ALE.FileSystem.File.ReadAllBytes(filePath, (buffer) =>
 			       			                            	{
 			       			                            		res.ContentType = GetMimeType(filePath);
 			       			                            		res.Write(buffer);

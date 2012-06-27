@@ -49,7 +49,7 @@ namespace ALE.Web
 			var aleContext = new AleContext(_context);
 			var req = aleContext.Request;
 			var res = aleContext.Response;
-			EventLoop.Current.Pend(() =>
+			EventLoop.Pend(t =>
 			                       	{
 			                       		Server.Create().Execute(req, res);
 			                       		if (_callback != null)

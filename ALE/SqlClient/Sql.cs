@@ -76,7 +76,7 @@ namespace ALE.SqlClient
 		{
 			if (callback == null) throw new ArgumentNullException("callback");
 			cmd.Connection.Open();
-			var state = new ExecuteReaderState(cmd, (reader) => EventLoop.Current.Pend(() => callback(reader)));
+			var state = new ExecuteReaderState(cmd, (reader) => EventLoop.Pend((t) => callback(reader)));
 			cmd.BeginExecuteReader(EndExecuteReader, state);
 			return this;
 		}

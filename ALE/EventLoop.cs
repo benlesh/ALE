@@ -1,53 +1,62 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ALE
 {
 	public class EventLoop
 	{
-		protected static readonly ConcurrentQueue<Action> Events = new ConcurrentQueue<Action>();
-		protected static readonly ManualResetEvent StopWorkers = new ManualResetEvent(false);
-		protected static readonly ManualResetEvent PauseWorkers = new ManualResetEvent(true);
-		protected static readonly TaskFactory WorkerFactory = new TaskFactory();
-		protected static readonly List<Task> Workers = new List<Task>();
-		private static bool _started;
-		private static EventLoop _currentEventLoop;
-		private int _workerCount = 1;
+		public readonly static ConcurrentQueue<Action<Task>> TaskQueue = new ConcurrentQueue<Action<Task>>();
+		protected static ManualResetEvent PauseWorkers = new ManualResetEvent(true);
+		protected static ManualResetEvent StopWorkers = new ManualResetEvent(false);
+		private static int _workerCount = 1;
+		private static Task[] _workers;
 
-		private EventLoop()
-		{
-		}
-
-		public static EventLoop Current
-		{
-			get { return _currentEventLoop ?? (_currentEventLoop = new EventLoop()); }
-		}
-
-		public bool IsRunning
-		{
-			get { return Workers.Any() && !StopWorkers.WaitOne(0); }
-		}
-
-		public int WorkerCount
+		public static int WorkerCount
 		{
 			get { return _workerCount; }
-			set { _workerCount = value; }
+			set
+			{
+				if (_workerCount <= 0) throw new ArgumentOutOfRangeException("WorkerCount must be a positive integer");
+				_workerCount = value;
+			}
 		}
 
-		public static void Start(Action begin = null)
+
+		public static void Start(Action<Task> startEvent = null)
 		{
-			Current.StartEventLoop(begin);
+			if (startEvent != null)
+			{
+				Pend(startEvent);
+			}
+			_workers = new Task[WorkerCount];
+			for (int i = 0; i < WorkerCount; i++)
+			{
+				_workers[i] = Task.Factory.StartNew(() =>
+													{
+														var t = Task.Factory.StartNew(() => { });
+														while (true)
+														{
+															PauseWorkers.WaitOne(Timeout.Infinite);
+															if (StopWorkers.WaitOne(0)) break;
+															var evt = Next();
+															if (evt != null)
+															{
+																t.ContinueWith(evt);
+															}
+														}
+													});
+			}
 		}
 
-
-		public Action Next()
+		public static Action<Task> Next()
 		{
-			Action evt;
-			if (Events.TryDequeue(out evt))
+			Action<Task> evt;
+			if (TaskQueue.TryDequeue(out evt))
 			{
 				return evt;
 			}
@@ -55,65 +64,17 @@ namespace ALE
 			return null;
 		}
 
-		public EventLoop Pend(Action evt)
+		public static void Pend(Action<Task> evt)
 		{
-			Events.Enqueue(evt);
+			TaskQueue.Enqueue(evt);
 			PauseWorkers.Set();
-			return this;
-		}
-
-		protected void Worker()
-		{
-			while (true)
-			{
-				PauseWorkers.WaitOne(Timeout.Infinite);
-				if (StopWorkers.WaitOne(0))
-				{
-					break;
-				}
-				var evt = Next();
-				if (evt != null)
-				{
-					evt.Invoke();
-				}
-			}
-		}
-
-		private void StartEventLoop(Action begin = null)
-		{
-			if (_started)
-			{
-				throw new InvalidOperationException("EventLoop is already started.");
-			}
-			if (begin != null)
-			{
-				Pend(begin);
-			}
-			for (var i = 0; i < WorkerCount; i++)
-			{
-				Workers.Add(WorkerFactory.StartNew(Worker));
-			}
 		}
 
 		public static void Stop()
 		{
-			Current.StopEventLoop();
-		}
-
-		public void StopEventLoop()
-		{
-			//Stop the event loop.
+			PauseWorkers.Set();
 			StopWorkers.Set();
-			foreach (var worker in Workers)
-			{
-				worker.Wait();
-			}
-			//Clear the events.
-			while (Events.Count > 0)
-			{
-				Action result;
-				Events.TryDequeue(out result);
-			}
+			Task.WaitAll(_workers);
 		}
 	}
 }
