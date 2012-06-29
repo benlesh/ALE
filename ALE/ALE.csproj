@@ -45,7 +45,9 @@
     <Compile Include="FileSystem\AsyncFileReadState.cs" />
     <Compile Include="FileSystem\File.cs" />
     <Compile Include="FileSystem\ReadAsyncCallbackState.cs" />
+    <Compile Include="Http\Controller.cs" />
     <Compile Include="Http\IContext.cs" />
+    <Compile Include="Http\IController.cs" />
     <Compile Include="Http\IRequest.cs" />
     <Compile Include="Http\IResponse.cs" />
     <Compile Include="Http\IServer.cs" />
@@ -54,6 +56,8 @@
     <Compile Include="Http\ListenerResponse.cs" />
     <Compile Include="Http\PostProcessor.cs" />
     <Compile Include="Http\PreProcessor.cs" />
+    <Compile Include="Http\Route.cs" />
+    <Compile Include="Http\Routing.cs" />
     <Compile Include="Http\Server.cs" />
     <Compile Include="Http\Static.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
