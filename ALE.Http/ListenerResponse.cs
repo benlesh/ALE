@@ -3,12 +3,15 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Text;
+using ALE.Views;
 
 namespace ALE.Http
 {
 	public class ListenerResponse : IResponse
 	{
 		protected readonly HttpListenerResponse InnerResponse;
+
+		public IViewProcessor ViewProcessor { get; set; }
 
 		internal ListenerResponse(HttpListenerResponse innerResponse, IContext context)
 		{
@@ -39,9 +42,7 @@ namespace ALE.Http
 			get { return InnerResponse.SendChunked; }
 			set { InnerResponse.SendChunked = value; }
 		}
-
-		#region IResponse Members
-
+		
 		public IContext Context { get; private set; }
 
 		public string ContentType
@@ -71,6 +72,24 @@ namespace ALE.Http
 		public IResponse Write(byte[] binary)
 		{
 			OutputStream.Write(binary, 0, binary.Length);
+			return this;
+		}
+
+		public IResponse Render(string view, object model, Action<Exception> callback = null)
+		{
+			if (ViewProcessor == null)
+			{
+				throw new InvalidOperationException("ViewProcessor is null, unable to process view.");
+			}
+			ViewProcessor.Render(view, model, (ex, rendered) =>
+												  {
+													  if(ex != null && callback != null)
+													  {
+														  EventLoop.Pend(t => callback(ex));
+													      return;
+													  }
+													  Write(rendered);
+												  });
 			return this;
 		}
 
@@ -128,7 +147,5 @@ namespace ALE.Http
 		{
 			InnerResponse.Redirect(url);
 		}
-
-		#endregion
 	}
 }

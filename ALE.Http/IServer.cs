@@ -1,4 +1,5 @@
 using System;
+using ALE.Views;
 
 namespace ALE.Http
 {
@@ -23,5 +24,12 @@ namespace ALE.Http
 		/// <param name="processor"> The processor to add. </param>
 		/// <returns> The server instance. </returns>
 		IServer Use(Action<IRequest, IResponse> processor);
+
+	    /// <summary>
+	    /// Sets the view processor for the server.
+	    /// </summary>
+	    /// <param name="viewProcessor">The view processor to use.</param>
+	    /// <returns>The server instance.</returns>
+	    IServer Use(IViewProcessor viewProcessor);
 	}
 }

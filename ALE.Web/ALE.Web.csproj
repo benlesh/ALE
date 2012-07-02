@@ -50,6 +50,10 @@
     <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ALE.Http\ALE.Http.csproj">
+      <Project>{3CB804B8-474A-4399-8E69-12EBB533CBEC}</Project>
+      <Name>ALE.Http</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ALE\ALE.csproj">
       <Project>{48CE219E-2D15-46D8-889F-52E04D110097}</Project>
       <Name>ALE</Name>

@@ -15,14 +15,14 @@ namespace ALE.ConsoleTest
 	{
 		private static void Main(string[] args)
 		{
-			EventLoop.Start((t) =>
-			                	{
-			                		Routing.Add("/test", typeof (TestController), "Route1");
-			                		Routing.Add("/foo/:foo", typeof (TestController), "Route2");
-			                		Server.Create()
-			                			.Use(Routing.Handler)
-			                			.Listen("http://*:1337/");
-			                	});
+            //EventLoop.Start((t) =>
+            //                    {
+            //                        Routing.Add("/test", typeof (TestController), "Route1");
+            //                        Routing.Add("/foo/:foo", typeof (TestController), "Route2");
+            //                        Server.Create()
+            //                            .Use(Routing.Handler)
+            //                            .Listen("http://*:1337/");
+            //                    });
 			Console.ReadKey();
 
 		}

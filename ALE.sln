@@ -8,7 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FDD27A3F-ED59-4239-AC68-0EA80B1F91B2}"
 	ProjectSection(SolutionItems) = preProject
 		ALE.vsmdi = ALE.vsmdi
+		license.txt = license.txt
 		Local.testsettings = Local.testsettings
+		README.md = README.md
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
@@ -17,6 +19,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AleIISTest", "AleIISTest\AleIISTest.csproj", "{8F4D3FC9-5F19-410E-8B26-DAAD61BA6266}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Web", "ALE.Web\ALE.Web.csproj", "{799DEAB2-BC16-4EDA-93F7-C0214E4D355B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Http", "ALE.Http\ALE.Http.csproj", "{3CB804B8-474A-4399-8E69-12EBB533CBEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Views.Razor", "ALE.Views.Razor\ALE.Views.Razor.csproj", "{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -81,6 +87,26 @@ Global
 		{799DEAB2-BC16-4EDA-93F7-C0214E4D355B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{799DEAB2-BC16-4EDA-93F7-C0214E4D355B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{799DEAB2-BC16-4EDA-93F7-C0214E4D355B}.Release|x86.ActiveCfg = Release|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3CB804B8-474A-4399-8E69-12EBB533CBEC}.Release|x86.ActiveCfg = Release|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

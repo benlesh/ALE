@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using ALE.Views;
 
 namespace ALE.Http
 {
@@ -12,6 +13,11 @@ namespace ALE.Http
 		///   The HTTP listener that handles receiving requests.
 		/// </summary>
 		protected readonly HttpListener Listener;
+
+		/// <summary>
+		/// The view processor requests will use.
+		/// </summary>
+		protected IViewProcessor ViewProcessor;
 
 		/// <summary>
 		///   Creates a new instance of a server.
@@ -109,9 +115,24 @@ namespace ALE.Http
 									{
 										var req = context.Request;
 										var res = context.Response;
+										if (ViewProcessor != null)
+										{
+											res.ViewProcessor = ViewProcessor;
+										}
 										OnProcess(req, res);
 									});
 			listener.BeginGetContext(GetContextCallback, listener);
+		}
+
+		/// <summary>
+		/// Sets the type of view processor to use.
+		/// </summary>
+		/// <param name="viewProcessor">The view processor to use.</param>
+		/// <returns>The server instance.</returns>
+		public IServer Use(IViewProcessor viewProcessor)
+		{
+			ViewProcessor = viewProcessor;
+			return this;
 		}
 	}
 }

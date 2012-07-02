@@ -5,11 +5,11 @@ namespace ALE.FileSystem
 {
 	internal class AsyncFileReadState
 	{
-		public readonly Action<byte[]> Callback;
+		public readonly Action<Exception, byte[]> Callback;
 		public readonly FileStream FileStream;
 		public byte[] Buffer;
 
-		public AsyncFileReadState(Action<byte[]> callback, FileStream fs, byte[] buffer)
+		public AsyncFileReadState(Action<Exception, byte[]> callback, FileStream fs, byte[] buffer)
 		{
 			Callback = callback;
 			FileStream = fs;

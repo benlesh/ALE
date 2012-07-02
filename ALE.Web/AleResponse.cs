@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using ALE.Http;
+using ALE.Views;
 
 namespace ALE.Web
 {
@@ -69,6 +70,8 @@ namespace ALE.Web
 			set { InnerResponse.StatusDescription = value; }
 		}
 
+		public IViewProcessor ViewProcessor { get; set; }
+
 		public void AddHeader(string name, string value)
 		{
 			InnerResponse.AddHeader(name, value);
@@ -106,6 +109,24 @@ namespace ALE.Web
 		public void Redirect(string location)
 		{
 			InnerResponse.Redirect(location);
+		}
+
+		public IResponse Render(string view, object model, Action<Exception> callback)
+		{
+			if (ViewProcessor == null)
+			{
+				throw new InvalidOperationException("ViewProcessor has not been set. Unable to render view.");
+			}
+			ViewProcessor.Render(view, model, (ex, rendered) =>
+												  {
+													  if (ex != null && callback != null)
+													  {
+														  EventLoop.Pend(t => callback(ex));
+														  return;
+													  }
+													  Write(rendered);
+												  });
+			return this;
 		}
 	}
 }

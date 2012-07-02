@@ -4,9 +4,9 @@ using System.IO;
 
 namespace ALE.Http
 {
-	public class Static
-	{
-		public static Dictionary<string, string> MimeTypes = new Dictionary<string, string>
+    public class Static
+    {
+        public static Dictionary<string, string> MimeTypes = new Dictionary<string, string>
 		                                                     	{
 		                                                     		{"ai", "application/postscript"},
 		                                                     		{"aif", "audio/x-aiff"},
@@ -181,41 +181,54 @@ namespace ALE.Http
 		                                                     		{"zip", "application/zip"}
 		                                                     	};
 
-		public static Action<IRequest, IResponse> Directory(string path)
-		{
-			if (String.IsNullOrWhiteSpace(path))
-			{
-				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path.Replace("/", "\\"));
-			}
+        public static Action<IRequest, IResponse> Directory(string path)
+        {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path.Replace("/", "\\"));
+            }
 
-			return (req, res) =>
-			       	{
-			       		var absPath = req.Url.AbsolutePath;
-			       		var unUrlified = Uri.UnescapeDataString(absPath.Replace("/", "\\")).TrimStart('\\');
-			       		var filePath = Path.Combine(path, unUrlified);
-			       		if (System.IO.File.Exists(filePath))
-			       		{
-			       			ALE.FileSystem.File.ReadAllBytes(filePath, (buffer) =>
-			       			                            	{
-			       			                            		res.ContentType = GetMimeType(filePath);
-			       			                            		res.Write(buffer);
-			       			                            		res.Send();
-			       			                            	});
-			       		}
-			       		else
-			       		{
-			       			res.StatusCode = 404;
-			       			res.StatusDescription = "File not found.";
-			       			res.Write("File not found");
-			       		}
-			       		res.Context.Complete();
-			       	};
-		}
+            return (req, res) =>
+                    {
+                        var absPath = req.Url.AbsolutePath;
+                        var unUrlified = Uri.UnescapeDataString(absPath.Replace("/", "\\")).TrimStart('\\');
+                        var filePath = Path.Combine(path, unUrlified);
+                        if (File.Exists(filePath))
+                        {
+                            FileSystem.File.ReadAllBytes(filePath, (ex, buffer) =>
+                                                            {
+                                                                if (ex != null)
+                                                                {
+                                                                    if (ex is FileNotFoundException)
+                                                                    {
+                                                                        res.StatusCode = 404;
+                                                                        res.StatusDescription = "File not found.";
+                                                                    } else
+                                                                    {
+                                                                        res.StatusCode = 500;
+                                                                        res.StatusDescription = "Internal server error.";
+                                                                    }
+                                                                } else
+                                                                {
+                                                                    res.ContentType = GetMimeType(filePath);
+                                                                    res.Write(buffer);
+                                                                }
+                                                                res.Send();
+                                                            });
+                        } else
+                        {
+                            res.StatusCode = 404;
+                            res.StatusDescription = "File not found.";
+                            res.Write("File not found");
+                        }
+                        res.Context.Complete();
+                    };
+        }
 
-		public static string GetMimeType(string filepath)
-		{
-			var ext = Path.GetExtension(filepath).ToLower().Substring(1);
-			return MimeTypes[ext];
-		}
-	}
+        public static string GetMimeType(string filepath)
+        {
+            var ext = Path.GetExtension(filepath).ToLower().Substring(1);
+            return MimeTypes[ext];
+        }
+    }
 }

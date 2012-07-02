@@ -88,7 +88,8 @@ To start a ALE in IIS:
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
 Version History
-
+ * v 0.0.7.2 - Added FileSystemWatcher implemention.
+   * added beginnings of Razor template view processor.
  * v 0.0.7.0 - Added routing.
  * v 0.0.6.1 - Rewrote EventLoop to use Tasks and ContinueWith rather than Actions for performance reasons, and cleaned up the api a little.
    * moved File class to proper namespace.

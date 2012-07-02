@@ -69,6 +69,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ALE.Http\ALE.Http.csproj">
+      <Project>{3CB804B8-474A-4399-8E69-12EBB533CBEC}</Project>
+      <Name>ALE.Http</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ALE.Web\ALE.Web.csproj">
       <Project>{799DEAB2-BC16-4EDA-93F7-C0214E4D355B}</Project>
       <Name>ALE.Web</Name>

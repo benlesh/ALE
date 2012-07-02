@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{48CE219E-2D15-46D8-889F-52E04D110097}</ProjectGuid>
+    <ProjectGuid>{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ALE</RootNamespace>
-    <AssemblyName>ALE</AssemblyName>
+    <RootNamespace>ALE.Views.Razor</RootNamespace>
+    <AssemblyName>ALE.Views.Razor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,8 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RazorEngine">
+      <HintPath>..\packages\RazorEngine.3.0.8\lib\net40\RazorEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\RazorEngine.3.0.8\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,16 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Do.cs" />
-    <Compile Include="EventLoop.cs" />
-    <Compile Include="FileSystem\AsyncFileReadState.cs" />
-    <Compile Include="FileSystem\File.cs" />
-    <Compile Include="FileSystem\FileSystemWatcher.cs" />
-    <Compile Include="FileSystem\ReadAsyncCallbackState.cs" />
+    <Compile Include="RazorViews.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlClient\Sql.cs" />
-    <Compile Include="Tcp\Net.cs" />
-    <Compile Include="Views\IViewProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ALE\ALE.csproj">
+      <Project>{48CE219E-2D15-46D8-889F-52E04D110097}</Project>
+      <Name>ALE</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
