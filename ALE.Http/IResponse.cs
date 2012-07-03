@@ -27,6 +27,6 @@ namespace ALE.Http
 		IResponse Write(byte[] binary);
 		void Send();
 		void Redirect(string location);
-	    IResponse Render(string view, object model, Action<Exception> callback = null);
+	    IResponse Render(string view, object model, Action<Exception> callback);
 	}
 }

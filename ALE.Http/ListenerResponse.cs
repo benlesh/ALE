@@ -75,20 +75,17 @@ namespace ALE.Http
 			return this;
 		}
 
-		public IResponse Render(string view, object model, Action<Exception> callback = null)
+		public IResponse Render(string view, object model, Action<Exception> callback)
 		{
+			if (callback == null) throw new ArgumentNullException("callback");
 			if (ViewProcessor == null)
 			{
 				throw new InvalidOperationException("ViewProcessor is null, unable to process view.");
 			}
 			ViewProcessor.Render(view, model, (ex, rendered) =>
 												  {
-													  if(ex != null && callback != null)
-													  {
-														  EventLoop.Pend(t => callback(ex));
-													      return;
-													  }
 													  Write(rendered);
+												      callback(ex);
 												  });
 			return this;
 		}

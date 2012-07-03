@@ -85,9 +85,9 @@ namespace ALE.Http
             return (Server)base.Use(processor);
         }
 
-        public Server User(IViewProcessor viewProcessor)
+        public new Server Use(IViewProcessor viewProcessor)
         {
-            return (Server)Use(viewProcessor);
+            return (Server)base.Use(viewProcessor);
         }
 
         public static Server Create()

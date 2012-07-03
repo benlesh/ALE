@@ -51,10 +51,19 @@
       <Project>{3CB804B8-474A-4399-8E69-12EBB533CBEC}</Project>
       <Name>ALE.Http</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ALE.Views.Razor\ALE.Views.Razor.csproj">
+      <Project>{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}</Project>
+      <Name>ALE.Views.Razor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ALE\ALE.csproj">
       <Project>{48CE219E-2D15-46D8-889F-52E04D110097}</Project>
       <Name>ALE</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ViewTest.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

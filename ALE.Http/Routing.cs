@@ -18,12 +18,11 @@ namespace ALE.Http
 		{
 			foreach (var route in Routes)
 			{
-				if (route.TryExecute(context))
+				if (route.TryExecute(context, next))
 				{
 					break;
 				}
 			}
-		    next();
 		}
 
 		public static void Add(string path, Type controllerType, string methodName)
