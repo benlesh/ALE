@@ -14,20 +14,16 @@ namespace ALE.Http
 		/// </summary>
 		public static readonly List<Route> Routes = new List<Route>();
 
-		/// <summary>
-		/// Handles routed requests.
-		/// </summary>
-		/// <param name="request">The request to route.</param>
-		/// <param name="response">The response to use.</param>
-		public static void Handler(IRequest request, IResponse response)
+		public static void Handler(IContext context, Action next)
 		{
 			foreach (var route in Routes)
 			{
-				if (route.TryExecute(request, response))
+				if (route.TryExecute(context))
 				{
 					break;
 				}
 			}
+		    next();
 		}
 
 		public static void Add(string path, Type controllerType, string methodName)

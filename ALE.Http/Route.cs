@@ -41,12 +41,14 @@ namespace ALE.Http
 
 		public static Regex CreatePathTester(string path)
 		{
-			var pattern = PathParser.Replace(path, m => "(?<" + m.Groups[1].Value + @">\w+?)(\W|$)" + m.Groups[2].Value);
+			var pattern = PathParser.Replace(path, m => "(?<" + m.Groups[1].Value + @">.+)" + m.Groups[2].Value);
 			return new Regex(pattern);
 		}
 
-		public bool TryExecute(IRequest req, IResponse res)
+		public bool TryExecute(IContext context)
 		{
+		    var req = context.Request;
+		    var res = context.Response;
 			var path = req.Url.PathAndQuery;
 			var isMatch = PathTester.IsMatch(path);
 			if (isMatch)
@@ -56,12 +58,12 @@ namespace ALE.Http
 				for (int i = 0; i < Parameters.Length; i++)
 				{
 					var parameterName = Parameters[i];
-					args[i] = match.Groups[parameterName].Value;
+					args[i] = Uri.UnescapeDataString(match.Groups[parameterName].Value);
 				}
 				var controller = (IController) Activator.CreateInstance(ControllerType);
 				controller.Request = req;
 				controller.Response = res;
-				controller.Context = req.Context;
+				controller.Context = context;
 				var typedController = Convert.ChangeType(controller, ControllerType);
 				var typedArgs = new object[args.Length];
 				for (int i = 0; i < Parameters.Length; i++)
@@ -72,7 +74,6 @@ namespace ALE.Http
 					typedArgs[i] = Convert.ChangeType(arg, parameter.ParameterType);
 				}
 				HandlerInfo.Invoke(typedController, typedArgs);
-				res.Send();
 			}
 			return isMatch;
 		}

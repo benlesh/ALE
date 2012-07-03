@@ -103,7 +103,6 @@ namespace ALE.Web
 		{
 			InnerResponse.Flush();
 			InnerResponse.Close();
-			Context.Complete();
 		}
 
 		public void Redirect(string location)

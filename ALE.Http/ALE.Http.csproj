@@ -45,7 +45,6 @@
     <Compile Include="IController.cs" />
     <Compile Include="IRequest.cs" />
     <Compile Include="IResponse.cs" />
-    <Compile Include="IServer.cs" />
     <Compile Include="ListenerContext.cs" />
     <Compile Include="ListenerRequest.cs" />
     <Compile Include="ListenerResponse.cs" />

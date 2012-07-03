@@ -97,7 +97,6 @@ namespace ALE.Http
 		{
 			OutputStream.Flush();
 			OutputStream.Close();
-			Context.Complete();
 		}
 
 		public CookieCollection Cookies

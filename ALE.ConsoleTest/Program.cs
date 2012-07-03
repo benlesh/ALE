@@ -11,20 +11,31 @@ using ALE.FileSystem;
 
 namespace ALE.ConsoleTest
 {
-	internal class Program
-	{
-		private static void Main(string[] args)
-		{
-            //EventLoop.Start((t) =>
-            //                    {
-            //                        Routing.Add("/test", typeof (TestController), "Route1");
-            //                        Routing.Add("/foo/:foo", typeof (TestController), "Route2");
-            //                        Server.Create()
-            //                            .Use(Routing.Handler)
-            //                            .Listen("http://*:1337/");
-            //                    });
-			Console.ReadKey();
+    class TestController : Controller
+    {
+        public void Test()
+        {
+            Response.Write("TestController.Test");
+        }
 
-		}
-	}
+        public void Foo(string foo)
+        {
+            Response.Write("TestController.Foo(\"" + foo + "\")");
+        }
+    }
+
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            Routing.Add("/Test", typeof(TestController), "Test");
+            Routing.Add("/Foo/:foo", typeof(TestController), "Foo");
+            EventLoop.Start(t => Server.Create()
+                .Use(Routing.Handler)
+                .Use(Static.Directory("/public"))
+                .Listen("http://*:1337/"));
+            Console.ReadKey();
+
+        }
+    }
 }

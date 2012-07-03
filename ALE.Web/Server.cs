@@ -1,17 +1,16 @@
 using System;
 using ALE.Http;
+using ALE.Views;
 
 namespace ALE.Web
 {
-	public class Server
+	public class Server : ServerBase
 	{
 		private static Server _instance;
 
 		private Server()
 		{
 		}
-
-		public event Action<IRequest, IResponse> Process;
 
 		public static Server Create()
 		{
@@ -22,19 +21,19 @@ namespace ALE.Web
 			return _instance;
 		}
 
-		public Server Use(Action<IRequest, IResponse> processor)
+		public new Server Use(Action<IContext, Action> processor)
 		{
-			Process += processor;
-			return this;
+			return (Server) base.Use(processor);
 		}
 
-		internal void Execute(IRequest req, IResponse res)
+		public new Server Use(IViewProcessor viewProcessor)
 		{
-			foreach (var processor in Process.GetInvocationList())
-			{
-				processor.DynamicInvoke(req, res);
-				if (req.Context.IsExecutionComplete) break;
-			}
+			return (Server) base.Use(viewProcessor);
+		}
+
+		internal void Execute(IContext context)
+		{
+		    this.OnProcess(context);
 		}
 	}
 }

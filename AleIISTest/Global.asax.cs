@@ -18,8 +18,16 @@ namespace AleIISTest
 
 			// Get the ALE server instance and wire up your middlware.
 			ALE.Web.Server.Create()
-				.Use((req, res) => res.Write("Hello World"))
-				.Use((req, res) => res.Write("<br/>No seriously, I said hello."));
+				.Use((context, next) =>
+				         {
+				             context.Response.Write("Hello World");
+				             next();
+				         })
+				.Use((context, next) =>
+				         {
+				             context.Response.Write("<br/>No seriously, I said hello.");
+				             next();
+				         });
 		}
 
 		void Application_End(object sender, EventArgs e)
