@@ -104,7 +104,7 @@ namespace ALE.Tcp
 			}
 		}
 
-		public void Send(string text, Action<Task> callback = null)
+		public void Send(string text, Action callback = null)
 		{
 			Debug.WriteLine(text);
 			var writeBuffer = EncodeServerData(text);
@@ -113,7 +113,7 @@ namespace ALE.Tcp
 			netstream.BeginWrite(writeBuffer, 0, writeBuffer.Length, SendCallback, state);
 		}
 
-		public void SendUnencoded(string text, Action<Task> callback = null)
+		public void SendUnencoded(string text, Action callback = null)
 		{
 			Debug.WriteLine(text);
 			var writeBuffer = Encoding.GetBytes(text);
@@ -159,10 +159,10 @@ namespace ALE.Tcp
 					var text = Encoding.GetString(state.Buffer, 0, bytesRead);
 					ClientHandshake = text;
 					var secKey = GetSecKey(ClientHandshake);
-					SendUnencoded(GetHandshake(secKey), t =>
+					SendUnencoded(GetHandshake(secKey), () =>
 					                                    	{
 					                                    		BeginRead();
-					                                    		EventLoop.Pend(x => Server.Callback(this));
+					                                    		EventLoop.Pend(() => Server.Callback(this));
 					                                    	});
 				}
 				else
@@ -173,7 +173,7 @@ namespace ALE.Tcp
 					foreach (var receive in _receiveEvents)
 					{
 						var rec = receive;
-						EventLoop.Pend((t) => rec(text));
+						EventLoop.Pend(() => rec(text));
 					}
 					BeginRead();
 				}
@@ -289,10 +289,10 @@ namespace ALE.Tcp
 
 		private class SendState
 		{
-			public readonly Action<Task> Callback;
+			public readonly Action Callback;
 			public readonly NetworkStream NetworkStream;
 
-			public SendState(NetworkStream netstream, Action<Task> callback)
+			public SendState(NetworkStream netstream, Action callback)
 			{
 				NetworkStream = netstream;
 				Callback = callback;

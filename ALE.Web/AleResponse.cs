@@ -120,7 +120,7 @@ namespace ALE.Web
 												  {
 													  if (ex != null && callback != null)
 													  {
-														  EventLoop.Pend(t => callback(ex));
+														  EventLoop.Pend(() => callback(ex));
 														  return;
 													  }
 													  Write(rendered);

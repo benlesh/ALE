@@ -88,6 +88,10 @@ To start a ALE in IIS:
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
 Version History
+ * v 0.0.9.4 - Updated EventLoops to be slightly more efficient.
+   * added unit tests.
+   * Fixed issues with Razor templating.
+   * Fixed some issues with routing.
  * v 0.0.7.2 - Added FileSystemWatcher implemention.
    * added beginnings of Razor template view processor.
  * v 0.0.7.0 - Added routing.

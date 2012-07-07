@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Http", "ALE.Http\ALE.Ht
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Views.Razor", "ALE.Views.Razor\ALE.Views.Razor.csproj", "{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Sql", "ALE.Sql\ALE.Sql.csproj", "{54C95345-6D76-485F-927E-6B5C78DBE639}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ALE.vsmdi
@@ -107,6 +109,16 @@ Global
 		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{36A64DC1-B883-49DC-BDB8-21FDC8987D0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{54C95345-6D76-485F-927E-6B5C78DBE639}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

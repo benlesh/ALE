@@ -41,25 +41,25 @@ namespace ALE.FileSystem
 
         public FileSystemWatcher Changed(Action<string> callback)
         {
-            _fsw.Changed += (sender, args) => EventLoop.Pend(t => callback(args.FullPath));
+            _fsw.Changed += (sender, args) => EventLoop.Pend(() => callback(args.FullPath));
             return this;
         }
 
         public FileSystemWatcher Deleted(Action<string> callback)
         {
-            _fsw.Deleted += (sender, args) => EventLoop.Pend(t => callback(args.FullPath));
+            _fsw.Deleted += (sender, args) => EventLoop.Pend(() => callback(args.FullPath));
             return this;
         }
 
         public FileSystemWatcher Created(Action<string> callback)
         {
-            _fsw.Created += (sender, args) => EventLoop.Pend(t => callback(args.FullPath));
+            _fsw.Created += (sender, args) => EventLoop.Pend(() => callback(args.FullPath));
             return this;
         }
 
         public FileSystemWatcher Renamed(Action<string, string> callback)
         {
-            _fsw.Renamed += (sender, args) => EventLoop.Pend(t => callback(args.FullPath, args.OldFullPath));
+            _fsw.Renamed += (sender, args) => EventLoop.Pend(() => callback(args.FullPath, args.OldFullPath));
             return this;
         }
 

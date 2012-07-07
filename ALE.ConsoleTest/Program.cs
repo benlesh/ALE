@@ -36,7 +36,7 @@ namespace ALE.ConsoleTest
         {
             Routing.Add("/Test", typeof(TestController), "Test");
             Routing.Add("/Foo/:foo", typeof(TestController), "Foo");
-            EventLoop.Start(t => Server.Create()
+            EventLoop.Start(() => Server.Create()
                 .Use(RazorView.Default)
                 .Use(Routing.Handler)
                 .Use(Static.Directory("/public"))

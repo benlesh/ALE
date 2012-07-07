@@ -56,7 +56,7 @@ namespace ALE.Http
             var resultContext = listener.EndGetContext(result);
 
             var context = new ListenerContext(resultContext);
-            EventLoop.Pend((t) =>
+            EventLoop.Pend(() =>
                                     {
                                         if (ViewProcessor != null)
                                         {

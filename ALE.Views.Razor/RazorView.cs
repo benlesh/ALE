@@ -34,7 +34,7 @@ namespace ALE.Views.Razor
             {
                 throw new FileNotFoundException("View not found.");
             }
-            FileSystem.File.ReadAllText(viewFile, (ex, text) => EventLoop.Pend(t => callback(ex, text)));
+            FileSystem.File.ReadAllText(viewFile, (ex, text) => EventLoop.Pend(() => callback(ex, text)));
         }
 
         public void Render(string view, object model, Action<Exception, string> callback)
@@ -43,15 +43,15 @@ namespace ALE.Views.Razor
                                {
                                    if (ex != null)
                                    {
-                                       EventLoop.Pend(t => callback(ex, null));
+                                       EventLoop.Pend(() => callback(ex, null));
                                    }
                                    try
                                    {
                                        var result = RazorEngine.Razor.Parse(viewtext, model);
-                                       EventLoop.Pend(t => callback(null, result));
+                                       EventLoop.Pend(() => callback(null, result));
                                    } catch (Exception ex2)
                                    {
-                                       EventLoop.Pend(t => callback(ex2, null));
+                                       EventLoop.Pend(() => callback(ex2, null));
                                    }
                                });
         }

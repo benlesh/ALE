@@ -27,7 +27,7 @@ namespace ALE.Tests.Http
 			string path = "/:controller/:action/:id";
 			var pathTester = Route.CreatePathTester(path);
 			var pattern = pathTester.ToString();
-			Assert.AreEqual(@"/(?<controller>\w+?)(\W|$)/(?<action>\w+?)(\W|$)/(?<id>\w+?)(\W|$)", pattern);
+			Assert.AreEqual(@"^/(?<controller>.+)/(?<action>.+)/(?<id>.+)", pattern);
 		}
 	}
 }

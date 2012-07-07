@@ -47,7 +47,7 @@ namespace ALE.Web
         private void DoWork(object workItemState)
         {
             var aleContext = new AleContext(_context);
-            EventLoop.Pend(t =>
+            EventLoop.Pend(() =>
                                {
                                    Server.Create().Execute(aleContext);
                                    if (_callback != null)

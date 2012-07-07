@@ -35,7 +35,7 @@ namespace ALE.FileSystem
                 Array.Copy(state.Buffer, buffer, bytesRead);
                 var callback = state.Callback;
                 var remainingBytes = state.RemainingBytes;
-                EventLoop.Pend(t =>
+                EventLoop.Pend(() =>
                                 {
                                     callback(null, remainingBytes, buffer);
                                 });
@@ -45,7 +45,7 @@ namespace ALE.FileSystem
         public static void ReadAllBytes(string path, Action<Exception, byte[]> callback)
         {
             if (callback == null) throw new ArgumentNullException("callback");
-            FileReadAllAsync(path, (ex, buffer) => EventLoop.Pend((t) => callback(ex, buffer)));
+            FileReadAllAsync(path, (ex, buffer) => EventLoop.Pend(() => callback(ex, buffer)));
         }
 
         public static void ReadAllText(string path, Action<Exception, string> callback)
@@ -63,10 +63,10 @@ namespace ALE.FileSystem
                                                     {
                                                         if (ex != null) throw ex;
                                                         var text = encoding.GetString(buffer);
-                                                        EventLoop.Pend((t) => callback(null, text));
+                                                        EventLoop.Pend(() => callback(null, text));
                                                     } catch (Exception ex2)
                                                     {
-                                                        EventLoop.Pend(t => callback(ex2, null));
+                                                        EventLoop.Pend(() => callback(ex2, null));
                                                     }
                                                 });
         }
@@ -97,10 +97,10 @@ namespace ALE.FileSystem
                                                                 lines.Add(reader.ReadLine());
                                                             }
                                                         }
-                                                        EventLoop.Pend((t) => callback(null, lines.ToArray()));
+                                                        EventLoop.Pend(() => callback(null, lines.ToArray()));
                                                     } catch (Exception ex2)
                                                     {
-                                                        EventLoop.Pend(t => callback(ex2, null));
+                                                        EventLoop.Pend(() => callback(ex2, null));
                                                     }
                                                 });
         }
@@ -115,7 +115,7 @@ namespace ALE.FileSystem
                 fs.BeginRead(buffer, 0, buffer.Length, FileReadAllCallback, state);
             } catch (Exception ex)
             {
-                EventLoop.Pend(t => complete(ex, null));
+                EventLoop.Pend(() => complete(ex, null));
             }
         }
 
