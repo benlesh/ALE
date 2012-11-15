@@ -45,6 +45,7 @@ To start a ALE in IIS:
 * Reference ALE and ALE.Web.
 * Add a reference to the HttpHandler in the Web.Config (here is the minimum Web.config required):
 
+
     &lt;?xml version="1.0"?&gt;
     &lt;configuration&gt;
       &lt;system.web&gt;
@@ -62,6 +63,7 @@ To start a ALE in IIS:
       &lt;/system.webServer&gt;
     &lt;/configuration&gt;
 	
+
 * Add initialization code to Application_Start in your Global.asax:
 
     void Application_Start(object sender, EventArgs e)
