@@ -45,24 +45,23 @@ To start a ALE in IIS:
 * Reference ALE and ALE.Web.
 * Add a reference to the HttpHandler in the Web.Config (here is the minimum Web.config required):
 
-
-    &lt;?xml version="1.0"?&gt;
-    &lt;configuration&gt;
-      &lt;system.web&gt;
-        &lt;compilation debug="true" targetFramework="4.0" /&gt;
-      &lt;/system.web&gt;
-
-      &lt;system.webServer&gt;
-        &lt;validation validateIntegratedModeConfiguration="false"/&gt;
-        &lt;modules runAllManagedModulesForAllRequests="true"/&gt;
-        &lt;handlers&gt;
-          &lt;add verb="*" path="*"
-            name="AleHttpHandler"
-            type="ALE.Web.AleHttpHandler"/&gt;
-        &lt;/handlers&gt;
-      &lt;/system.webServer&gt;
-    &lt;/configuration&gt;
-	
+        <?xml version="1.0"?>
+        <configuration>
+          <system.web>
+            <compilation debug="true" targetFramework="4.0" />
+         </system.web>
+         <system.webServer>
+       	 <validation validateIntegratedModeConfiguration="false"/>
+         	<modules runAllManagedModulesForAllRequests="true"/>
+         	<handlers>
+         	  <add verb="*" path="*"
+         		name="AleHttpHandler"
+         		type="ALE.Web.AleHttpHandler"/>
+         	</handlers>
+           </system.webServer>
+         </configuration>
+	 
+	 
 
 * Add initialization code to Application_Start in your Global.asax:
 
