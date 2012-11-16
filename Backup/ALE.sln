@@ -1,6 +1,10 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE", "ALE\ALE.csproj", "{48CE219E-2D15-46D8-889F-52E04D110097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Tests", "ALE.Tests\ALE.Tests.csproj", "{C0DCF894-5025-44A9-BCF2-1FD803EC3A10}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FDD27A3F-ED59-4239-AC68-0EA80B1F91B2}"
 	ProjectSection(SolutionItems) = preProject
 		ALE.vsmdi = ALE.vsmdi
@@ -9,10 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE", "ALE\ALE.csproj", "{48CE219E-2D15-46D8-889F-52E04D110097}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.Tests", "ALE.Tests\ALE.Tests.csproj", "{C0DCF894-5025-44A9-BCF2-1FD803EC3A10}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALE.ConsoleTest", "ALE.ConsoleTest\ALE.ConsoleTest.csproj", "{7AEA9929-B496-425F-8F80-DE270504940A}"
 EndProject

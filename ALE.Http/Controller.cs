@@ -13,7 +13,7 @@ namespace ALE.Http
 
 		public IContext Context { get; set; }
 
-		public Controller()
+	    protected Controller()
 		{
 		}
 	}

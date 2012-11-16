@@ -49,6 +49,7 @@
     <Compile Include="EventLoop_Tests.cs" />
     <Compile Include="Http\Routing_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Promise_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ALE.Http\ALE.Http.csproj">

@@ -119,6 +119,7 @@ namespace ALE.Http
         ///   Adds preprocessing middleware.
         /// </summary>
         /// <param name="middleware"> The middleware to add. </param>
+        /// <param name="processor"> </param>
         /// <returns> The server instance. </returns>
         public ServerBase Use(Action<IContext, Action> processor)
         {

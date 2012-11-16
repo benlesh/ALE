@@ -15,7 +15,7 @@ namespace ALE.Tests
         public void Do_Timeout()
         {
             var sw = Stopwatch.StartNew();
-            var ms = 100;
+            const int ms = 100;
             var i = 0;
             var ellapsed = 0L;
             var wait = new AutoResetEvent(false);
@@ -52,7 +52,7 @@ namespace ALE.Tests
             var i = 0;
             var elapsed = 0L;
             var wait = new AutoResetEvent(false);
-            var intervalTime = 100;
+            const int intervalTime = 100;
             var killswitch = Do.Interval(() =>
                             {
                                 i++;

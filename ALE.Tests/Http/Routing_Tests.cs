@@ -13,7 +13,7 @@ namespace ALE.Tests.Http
 		[TestMethod]
 		public void Route_GetParameters()
 		{
-			string path = "/:controller/:action/:id";
+			const string path = "/:controller/:action/:id";
 			var parameters = Route.GetParameters(path);
 			Assert.AreEqual(3, parameters.Length);
 			Assert.AreEqual("controller", parameters[0]);
@@ -24,7 +24,7 @@ namespace ALE.Tests.Http
 		[TestMethod]
 		public void Route_CreatePathTester()
 		{
-			string path = "/:controller/:action/:id";
+			const string path = "/:controller/:action/:id";
 			var pathTester = Route.CreatePathTester(path);
 			var pattern = pathTester.ToString();
 			Assert.AreEqual(@"^/(?<controller>.+)/(?<action>.+)/(?<id>.+)", pattern);

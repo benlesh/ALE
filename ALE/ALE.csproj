@@ -47,8 +47,12 @@
     <Compile Include="FileSystem\File.cs" />
     <Compile Include="FileSystem\FileSystemWatcher.cs" />
     <Compile Include="FileSystem\ReadAsyncCallbackState.cs" />
+    <Compile Include="Promise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tcp\Net.cs" />
+    <Compile Include="Tcp\WebSocket.cs" />
+    <Compile Include="Tcp\WebSocketHandshake.cs" />
+    <Compile Include="Tcp\WebSocketServer.cs" />
     <Compile Include="Views\IViewProcessor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

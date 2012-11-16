@@ -31,7 +31,7 @@ namespace ALE.Tests
         {
             var wait = new AutoResetEvent(false);
             EventLoop.Start();
-            var loops = 10;
+            const int loops = 10;
             for (int i = 0; i < loops; i++)
             {
                 var x = i;
