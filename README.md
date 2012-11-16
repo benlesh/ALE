@@ -89,6 +89,7 @@ To start a ALE in IIS:
 See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
 
 Version History
+ * v 0.0.10.2 - Added basic Promise implementation
  * v 0.0.9.4 - Updated EventLoops to be slightly more efficient.
    * added unit tests.
    * Fixed issues with Razor templating.

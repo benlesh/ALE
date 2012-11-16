@@ -15,7 +15,7 @@ namespace ALE.Tests
             var handle = new ManualResetEvent(false);
             EventLoop.Start(() =>
                 {
-                    Future.Promise((deferrer) =>
+                    Promise.To((deferrer) =>
                         {
                             Do.Timeout(() =>
                                 {
@@ -46,7 +46,7 @@ namespace ALE.Tests
             int i = 0;
             Func<Promise> createPromise = () =>
                 {
-                    return Future.Promise((deferrer) =>
+                    return Promise.To((deferrer) =>
                         {
                             Do.Timeout(() =>
                                 {
@@ -59,7 +59,7 @@ namespace ALE.Tests
             var handle = new ManualResetEvent(false);
             EventLoop.Start(() =>
                 {
-                    Future.When(createPromise(), createPromise(), createPromise())
+                    Promise.When(createPromise(), createPromise(), createPromise())
                         .Then((data) =>
                             {
                                 handle.Set();
@@ -80,14 +80,14 @@ namespace ALE.Tests
         public void PromiseError_Test()
         {
             var handle = new ManualResetEvent(false);
-            Future.Promise((deferrer) =>
+            Promise.To((deferrer) =>
                 {
                     Do.Timeout(() => deferrer.Reject("Testing rejection."), 400);
                 }).Error((reason) =>
                     {
                         handle.Set();
                     });
-            if (handle.WaitOne(600))
+            if (!handle.WaitOne(600))
             {
                 Assert.Fail();
             }
