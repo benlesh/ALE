@@ -46,32 +46,160 @@
 
 
       <section id="main_content">
-        <h3>Welcome to GitHub Pages.</h3>
+        <h3>ALE - Another Looping Event - (Alpha)</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Created by Ben Lesh</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>Licensed under GNU General Public License v 3</p>
+
+<h1></h1>
+
+<p>This project is a Node.js style implementation of an event loop architecture in C#. This is something I whipped up for fun, mostly as a proof of concept. I like it though, and I'm looking for feedback.</p>
+
+<p>Thank you for any feedback you might have.</p>
+
+<p><em>examples</em></p>
+
+<h3>To start a web server</h3>
+
+<pre><code>EventLoop.Start(() =&gt; {
+    Server.Create()
+       .Use((req, res) =&gt; {
+          res.Write("&lt;h1&gt;Hello World&lt;/h1&gt;");
+       }).Listen("http://*:1337");
+});
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h3>Setting up a web socket server</h3>
 
-<h3>Designer Templates</h3>
+<pre><code>EventLoop.Start(() =&gt; {
+    Net.CreateServer((socket) =&gt; {
+        socket.Receive((text) =&gt; {
+            socket.Send("Echo: " + text);
+        });
+    }).Listen("127.0.0.1", 1338, "http://origin.com");
+});
+</code></pre>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Or just to do something like read a file from disk:</p>
 
-<h3>Rather Drive Stick?</h3>
+<pre><code>EventLoop.Start(() =&gt; {
+    File.ReadAllText(@"C:\File.txt", (text) =&gt; {
+        DoSomething(text);
+    });
+});
+</code></pre>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h3>To start a ALE in IIS</h3>
 
-<h3>Authors and Contributors</h3>
+<ul>
+<li>Start a new web project.</li>
+<li>Reference ALE and ALE.Web.</li>
+<li>
+<p>Add a reference to the HttpHandler in the Web.Config (here is the minimum Web.config required):</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<pre><code>&lt;?xml version="1.0"?&gt;
+&lt;configuration&gt;
+  &lt;system.web&gt;
+    &lt;compilation debug="true" targetFramework="4.0" /&gt;
+ &lt;/system.web&gt;
+ &lt;system.webServer&gt;
+ &lt;validation validateIntegratedModeConfiguration="false"/&gt;
+    &lt;modules runAllManagedModulesForAllRequests="true"/&gt;
+    &lt;handlers&gt;
+      &lt;add verb="*" path="*"
+        name="AleHttpHandler"
+        type="ALE.Web.AleHttpHandler"/&gt;
+    &lt;/handlers&gt;
+   &lt;/system.webServer&gt;
+ &lt;/configuration&gt;
+</code></pre>
+</li>
+<li>
+<p>Add initialization code to Application_Start in your Global.asax:</p>
 
-<h3>Support or Contact</h3>
+<p>void Application_Start(object sender, EventArgs e)
+{
+    // Start the event loop.
+    EventLoop.Start();</p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<pre><code>// Get the ALE server instance and wire up your middlware.
+ALE.Web.Server.Create()
+    .Use((req, res) =&gt; res.Write("Hello World"))
+    .Use((req, res) =&gt; res.Write("&lt;br/&gt;No seriously, I said hello."));
+</code></pre>
+
+<p>}</p>
+</li>
+<li>
+<p>Add teardown in Application_End in your Global.asax:</p>
+
+<p>void Application_End(object sender, EventArgs e)
+{
+    // Shut down the EventLoop.
+    EventLoop.Stop();
+}</p>
+</li>
+</ul><p>See my blog at <a href="http://www.benlesh.com">http://www.benlesh.com</a> for more information (posts tagged with ALE)</p>
+
+<h3>Version History</h3>
+
+<ul>
+<li>v 0.0.10.2 - Added basic Promise implementation</li>
+<li>v 0.0.9.4 - Updated EventLoops to be slightly more efficient.
+
+<ul>
+<li>added unit tests.</li>
+<li>Fixed issues with Razor templating.</li>
+<li>Fixed some issues with routing.</li>
+</ul>
+</li>
+<li>v 0.0.7.2 - Added FileSystemWatcher implemention.
+
+<ul>
+<li>added beginnings of Razor template view processor.</li>
+</ul>
+</li>
+<li>v 0.0.7.0 - Added routing.</li>
+<li>v 0.0.6.1 - Rewrote EventLoop to use Tasks and ContinueWith rather than Actions for performance reasons, and cleaned up the api a little.
+
+<ul>
+<li>moved File class to proper namespace.</li>
+<li>updated File async methods.</li>
+<li>added File.Read method for streaming file data.</li>
+</ul>
+</li>
+<li>v 0.0.5.0 - Added asynchronous http handler for IIS integration.</li>
+<li>v 0.0.4.6 - Added a static file server implementation.</li>
+<li>v 0.0.4.4 - Updated web server to use a single event to register all actions
+
+<ul>
+<li>removed preprocessor and post processor events.</li>
+<li>Create method no longer used to register a main event. There is no main event.</li>
+</ul>
+</li>
+<li>v 0.0.4.2 - Converted middleware usage to simple event/delegate implementation.</li>
+<li>v 0.0.4.1 - Abstractions and Middleware capabilities added. Laying the groundwork for a routed server.
+
+<ul>
+<li>Abstracted out Server, Request and Response.</li>
+<li>Added IPreprocessor and IPostprocessor for "before and after" middleware implementations.</li>
+<li>Added Using method and overloards to IServer to handle attaching middleware.</li>
+</ul>
+</li>
+<li>v 0.0.3.0 - Added non-blocking WebSocket implementation</li>
+<li>v 0.0.2.2 - Fixed a few issues
+
+<ul>
+<li>Fixed an issue where EventLoop wouldn't pause when Events Queue was empty.</li>
+<li>Added Do.Async functionality.</li>
+<li>Tested multithreaded event-loop processing.</li>
+</ul>
+</li>
+<li>v 0.0.2.1 - Updated Sql client Reader call to .NET's non-blocking async call.</li>
+<li>v 0.0.2.0 - Updated all I/O called to .NET's non-blocking async calls.</li>
+<li>v 0.0.1.0 - Added a simple SqlClient implementation, ExecuteReader only for now. More soon.</li>
+</ul>
       </section>
 
       <footer>
