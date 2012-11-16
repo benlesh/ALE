@@ -1,8 +1,10 @@
 **ALE - Another Looping Event - (Alpha)**
 
 Created by Ben Lesh
+http://www.benlesh.com
+ben@benlesh.com
 
-Licensed under GNU General Public License v 3
+Licensed under MIT license
 
 ===
 
