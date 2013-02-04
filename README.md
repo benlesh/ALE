@@ -67,24 +67,24 @@ To start a ALE in IIS:
 
 * Add initialization code to Application_Start in your Global.asax:
 
-     void Application_Start(object sender, EventArgs e)
-     {
-        // Start the event loop.
-        EventLoop.Start();
-
-        // Get the ALE server instance and wire up your middlware.
-        ALE.Web.Server.Create()
-            .Use((req, res) => res.Write("Hello World"))
-            .Use((req, res) => res.Write("<br/>No seriously, I said hello."));
-     }
+         void Application_Start(object sender, EventArgs e)
+         {
+            // Start the event loop.
+            EventLoop.Start();
+    
+            // Get the ALE server instance and wire up your middlware.
+            ALE.Web.Server.Create()
+                .Use((req, res) => res.Write("Hello World"))
+                .Use((req, res) => res.Write("<br/>No seriously, I said hello."));
+         }
 
 * Add teardown in Application_End in your Global.asax:
 
-    void Application_End(object sender, EventArgs e)
-    {
-        // Shut down the EventLoop.
-        EventLoop.Stop();
-    }
+         void Application_End(object sender, EventArgs e)
+         {
+             // Shut down the EventLoop.
+             EventLoop.Stop();
+         }
 
 
 
