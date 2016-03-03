@@ -88,7 +88,7 @@ To start a ALE in IIS:
 
 
 
-See my blog at http://www.benlesh.com for more information (posts tagged with ALE)
+See my related blog posts for more information: http://www.benlesh.com/search/label/ALE
 
 Version History
  * v 0.0.10.2 - Added basic Promise implementation
