@@ -7,6 +7,7 @@ ben@benlesh.com
 Licensed under MIT license
 
 ===
+# DO NOT USE: This is an old experiment and is not maintained
 
 This project is a Node.js style implementation of an event loop architecture in C#. This is something I whipped up for fun, mostly as a proof of concept. I like it though, and I'm looking for feedback.
 
@@ -16,15 +17,18 @@ Thank you for any feedback you might have.
 
 To start a webserver:
 
+```CSharp
     EventLoop.Start(() => {
         Server.Create()
 		   .Use((req, res) => {
               res.Write("<h1>Hello World</h1>");
            }).Listen("http://*:1337");
     });
-    
+```
+
 To set up a web sockets server:
 
+```CSharp
     EventLoop.Start(() => {
         Net.CreateServer((socket) => {
             socket.Receive((text) => {
@@ -32,21 +36,25 @@ To set up a web sockets server:
             });
         }).Listen("127.0.0.1", 1338, "http://origin.com");
     });
-    
+```
+
 Or just to do something like read a file from disk:
 
+```CSharp
     EventLoop.Start(() => {
         File.ReadAllText(@"C:\File.txt", (text) => {
             DoSomething(text);
         });
     });
-	
+```
+
 To start a ALE in IIS:
 
 * Start a new web project.
 * Reference ALE and ALE.Web.
 * Add a reference to the HttpHandler in the Web.Config (here is the minimum Web.config required):
 
+```xml
         <?xml version="1.0"?>
         <configuration>
           <system.web>
@@ -62,11 +70,11 @@ To start a ALE in IIS:
          	</handlers>
            </system.webServer>
          </configuration>
-	 
+```	 
 	 
 
 * Add initialization code to Application_Start in your Global.asax:
-
+```CSharp
          void Application_Start(object sender, EventArgs e)
          {
             // Start the event loop.
@@ -77,15 +85,15 @@ To start a ALE in IIS:
                 .Use((req, res) => res.Write("Hello World"))
                 .Use((req, res) => res.Write("<br/>No seriously, I said hello."));
          }
-
+```
 * Add teardown in Application_End in your Global.asax:
-
+```
          void Application_End(object sender, EventArgs e)
          {
              // Shut down the EventLoop.
              EventLoop.Stop();
          }
-
+```
 
 
 See my related blog posts for more information: http://www.benlesh.com/search/label/ALE
